@@ -317,20 +317,28 @@ const portfolioData = {
 
   certifications: [
     {
-      title: "Frontend Web Development Certification",
-      organization: "Cognify Technologies",
-      date: "Credential Verified",
-      code: "ID: COG-WEB-2024",
+      id: "cognifyz-internship",
+      title: "Web Development Internship Certificate",
+      organization: "Cognifyz IT Solutions Pvt. Ltd.",
+      date: "12/05/2026 - 12/06/2026",
+      code: "INTERN ID: CTI/A1/C357242",
       link: "assets/cognify_certificate.pdf",
-      icon: "fas fa-satellite"
+      previewImage: "assets/images/cognify_certificate.png",
+      icon: "fas fa-certificate",
+      issuer: "Cognifyz IT Solutions (ISO 9001:2015 & MSME Certified)",
+      details: "Completed 1-month intensive Web Development Internship demonstrating exceptional dedication in frontend development, component coordination, and problem solving."
     },
     {
-      title: "Advanced Software Engineering Job Simulation Certification",
-      organization: "Forage",
-      date: "Credential Verified",
-      code: "ID: FORAGE-SWE-2024",
+      id: "forage-swe",
+      title: "Advanced Software Engineering Job Simulation",
+      organization: "Forage (Walmart Global Tech)",
+      date: "May 2026",
+      code: "ID: FORAGE-SWE-WALMART",
       link: "assets/forage_certificate.pdf",
-      icon: "fas fa-space-shuttle"
+      previewImage: "assets/images/forage_certificate.png",
+      icon: "fas fa-award",
+      issuer: "Walmart Global Tech & Forage",
+      details: "Completed practical tasks in Advanced Data Structures, Software Architecture, Relational Database Design, and Data Munging verified by Walmart Global CTO."
     }
   ],
 

@@ -564,16 +564,136 @@ function renderAchievementsAndCerts() {
               <i class="${c.icon} text-cyan" style="font-size: 1.3rem;"></i>
               <h4 class="cert-title mb-0">${c.title}</h4>
             </div>
-            <p class="cert-org"><i class="fas fa-building me-1 text-purple"></i> ${c.organization}</p>
+            <p class="cert-org mb-3"><i class="fas fa-building me-1 text-purple"></i> ${c.organization}</p>
+            
+            <!-- High-res Certificate Thumbnail Preview -->
+            <div class="cert-thumbnail-wrapper mb-3" data-cert-id="${c.id}" title="Click to view full certificate">
+              <img src="${c.previewImage}" alt="${c.title}" class="cert-thumb-img">
+              <div class="cert-hover-overlay">
+                <span class="badge" style="background: rgba(56,189,248,0.9); color: #02040a; font-family: var(--font-hud); font-size: 0.72rem; padding: 6px 12px;">
+                  <i class="fas fa-search-plus me-1"></i> CLICK TO ENLARGE
+                </span>
+              </div>
+            </div>
           </div>
-          <a href="${c.link}" target="_blank" class="btn-space btn-space-primary btn-sm align-self-start mt-3">
-            <span class="btn-corner tl"></span><span class="btn-corner br"></span>
-            <i class="fas fa-file-pdf me-2"></i> VERIFY CREDENTIAL
-          </a>
+
+          <div class="d-flex flex-wrap gap-2 mt-2">
+            <button class="btn-space btn-space-primary btn-sm view-cert-btn" data-cert-id="${c.id}">
+              <span class="btn-corner tl"></span><span class="btn-corner br"></span>
+              <i class="fas fa-eye me-2"></i> VIEW CERTIFICATE
+            </button>
+            <a href="${c.link}" download class="btn-space btn-space-secondary btn-sm">
+              <span class="btn-corner tl"></span><span class="btn-corner br"></span>
+              <i class="fas fa-file-download me-2"></i> DOWNLOAD PDF
+            </a>
+          </div>
         </div>
       </div>
     `).join("");
+
+    // Bind certificate modal click events
+    document.querySelectorAll(".view-cert-btn, .cert-thumbnail-wrapper").forEach(el => {
+      el.addEventListener("click", (e) => {
+        e.preventDefault();
+        const cid = el.getAttribute("data-cert-id");
+        const cert = portfolioData.certifications.find(x => x.id === cid);
+        if (cert) {
+          playSynthSound("scan");
+          showCertificateModal(cert);
+        }
+      });
+    });
   }
+}
+
+// Holographic Certificate Modal Viewer
+function showCertificateModal(cert) {
+  let modal = document.getElementById("cert-details-modal");
+  if (!modal) {
+    modal = document.createElement("div");
+    modal.id = "cert-details-modal";
+    document.body.appendChild(modal);
+  }
+
+  modal.innerHTML = `
+    <div style="position: fixed; inset: 0; background: rgba(2, 4, 10, 0.94); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); display: flex; align-items: center; justify-content: center; z-index: 999999; opacity: 0; transition: opacity 0.3s ease;">
+      <div class="glass-panel text-start" style="max-width: 820px; width: 94%; max-height: 94vh; overflow-y: auto; padding: 30px; border-radius: 16px; border: 1px solid var(--neon-cyan); box-shadow: 0 0 50px var(--glow-cyan); position: relative;">
+        
+        <!-- Close Button -->
+        <button id="close-cert-modal" aria-label="Close Certificate Viewer" style="position: absolute; top: 18px; right: 18px; background: none; border: 1px solid var(--border-hud); color: var(--neon-cyan); border-radius: 50%; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; cursor: pointer; z-index: 10;">
+          <i class="fas fa-times"></i>
+        </button>
+
+        <!-- Top Header -->
+        <div class="d-flex align-items-center gap-3 mb-3">
+          <div class="contact-icon-box" style="width: 46px; height: 46px; font-size: 1.3rem;"><i class="${cert.icon}"></i></div>
+          <div>
+            <div class="panel-code" style="font-size: 0.65rem;">${cert.code} // OFFICIAL VERIFIED CREDENTIAL</div>
+            <h3 class="fw-bold mb-0" style="font-family: var(--font-hud); font-size: 1.25rem; color: #fff;">${cert.title}</h3>
+          </div>
+        </div>
+
+        <div class="text-dim mb-3" style="font-family: var(--font-tech); font-size: 0.88rem;">
+          <i class="fas fa-building text-purple me-1"></i> Issued by: <strong class="text-white">${cert.organization}</strong> 
+          <span class="mx-2 text-muted-space">|</span>
+          <i class="far fa-calendar-alt text-info me-1"></i> ${cert.date}
+        </div>
+
+        <!-- High-Resolution Certificate Document Canvas / Image -->
+        <div style="width: 100%; border-radius: 10px; overflow: hidden; border: 1px solid var(--border-hud); background: #ffffff; margin-bottom: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.8); text-align: center;">
+          <img src="${cert.previewImage}" alt="${cert.title}" style="width: 100%; height: auto; max-height: 540px; object-fit: contain; display: block; margin: 0 auto;">
+        </div>
+
+        <!-- Verification details -->
+        <div class="p-3 mb-4 rounded" style="background: rgba(4,9,21,0.7); border: 1px solid var(--border-hud);">
+          <div class="panel-sub-header mb-1"><i class="fas fa-shield-alt text-success me-1"></i> CREDENTIAL VERIFICATION DETAILS</div>
+          <p class="panel-text mb-0" style="font-size: 0.88rem;">${cert.details || 'Verified completion certificate. Authenticated with official organization seal and digital accreditation.'}</p>
+        </div>
+
+        <!-- Actions -->
+        <div class="d-flex flex-wrap gap-3 pt-2 border-top border-secondary border-opacity-25">
+          <a href="${cert.link}" download class="btn-space btn-space-primary">
+            <span class="btn-corner tl"></span><span class="btn-corner br"></span>
+            <i class="fas fa-file-download me-2"></i> DOWNLOAD ORIGINAL PDF
+          </a>
+          <a href="${cert.link}" target="_blank" class="btn-space btn-space-secondary">
+            <span class="btn-corner tl"></span><span class="btn-corner br"></span>
+            <i class="fas fa-external-link-alt me-2"></i> OPEN PDF IN NEW WINDOW
+          </a>
+        </div>
+
+      </div>
+    </div>
+  `;
+
+  modal.style.display = "block";
+  setTimeout(() => {
+    modal.firstElementChild.style.opacity = "1";
+  }, 40);
+
+  const closeBtn = document.getElementById("close-cert-modal");
+  const overlay = modal.firstElementChild;
+
+  const closeModal = () => {
+    playSynthSound("blip");
+    overlay.style.opacity = "0";
+    setTimeout(() => {
+      modal.style.display = "none";
+    }, 300);
+  };
+
+  closeBtn.addEventListener("click", closeModal);
+  overlay.addEventListener("click", (e) => {
+    if (e.target === overlay) closeModal();
+  });
+
+  const escHandler = (e) => {
+    if (e.key === "Escape") {
+      closeModal();
+      window.removeEventListener("keydown", escHandler);
+    }
+  };
+  window.addEventListener("keydown", escHandler);
 }
 
 // 7. SERVICES
