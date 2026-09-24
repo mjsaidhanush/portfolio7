@@ -1,242 +1,528 @@
 /**
- * Portfolio Main Interactions Controller
- * Dynamic Render Engine & Animations
+ * SPACE-THEMED DEVELOPER PORTFOLIO - CONTROLLER & ENGINE
+ * PILOT: MJ SAI DHANUSH
+ * SHIP: NEXUS-VII
+ * Features: High-Performance Starfield Canvas, Audio Synth, 3D Planets, Telemetry HUD
  */
 
 document.addEventListener("DOMContentLoaded", () => {
-  // Initialize loader
+  // 1. Initialize Loader
   const loader = document.getElementById("loader");
   if (loader) {
     window.addEventListener("load", () => {
-      loader.style.opacity = "0";
-      loader.style.visibility = "hidden";
+      setTimeout(() => {
+        loader.style.opacity = "0";
+        loader.style.visibility = "hidden";
+      }, 500);
     });
-    // Fallback: hide loader after 2.5s anyway to avoid stuck state
+    // Fallback timer
     setTimeout(() => {
       loader.style.opacity = "0";
       loader.style.visibility = "hidden";
-    }, 2500);
+    }, 2000);
   }
 
-  // Check data availability
+  // Check data
   if (typeof portfolioData === "undefined") {
-    console.error("Error: portfolioData is not loaded. Please include data.js before main.js.");
+    console.error("Critical: portfolioData is missing!");
     return;
   }
 
-  // 1. DYNAMIC RENDER PIPELINE
+  // 2. Initialize Space Engine & Canvases
+  initStarfieldCanvas();
+  initSpaceAudio();
+
+  // 3. Dynamic Telemetry & Render Pipeline
   renderHero();
-  renderAboutMe();
-  renderSkills();
-  renderProjects("all"); // initial render all projects
-  renderExperience();
-  renderCertifications();
-  renderAchievements();
+  renderMissionControl();
+  renderTechnology();
+  renderProjectGalaxy("all");
+  renderCareerJourney();
+  renderAchievementsAndCerts();
   renderServices();
   renderTestimonials();
-  renderContactInfo();
-  setupProjectFilters();
+  renderContactBase();
 
-  // 2. ADDITIONAL SCRIPTS & INTERACTION BINDINGS
-  setupThemeToggle();
-  setupScrollProgress();
-  setupStickyNavbar();
-  setupCustomCursor();
+  // 4. Interactive Listeners & Systems
+  setupNavbarAndScroll();
+  setupGalaxyControls();
   setupTypewriter();
   setupScrollReveal();
-  setupStatsCounter();
+  setupStatsCounters();
+  setupCustomCursor();
+  setupWarpSpeed();
   setupContactForm();
-  setupBackToTop();
-  setupProjectModal();
+  setupBackToBridge();
 });
 
-/* ==========================================
-   RENDER ENGINES
-   ========================================== */
+/* ==========================================================================
+   HIGH-PERFORMANCE HTML5 STARFIELD CANVAS ENGINE
+   ========================================================================== */
+function initStarfieldCanvas() {
+  const canvas = document.getElementById("space-canvas");
+  if (!canvas) return;
 
-// Hero Section Render
+  const ctx = canvas.getContext("2d");
+  let width = (canvas.width = window.innerWidth);
+  let height = (canvas.height = window.innerHeight);
+
+  // Responsive star count for optimal 60 FPS
+  const isMobile = width < 768;
+  const STAR_COUNT = isMobile ? 85 : 220;
+  const stars = [];
+
+  // Color spectrum for stars
+  const starColors = ["#ffffff", "#e0f2fe", "#bae6fd", "#c4b5fd", "#fbcfe8"];
+
+  class Star {
+    constructor() {
+      this.reset();
+    }
+
+    reset() {
+      this.x = (Math.random() - 0.5) * width * 1.5;
+      this.y = (Math.random() - 0.5) * height * 1.5;
+      this.z = Math.random() * width;
+      this.size = Math.random() * 1.8 + 0.5;
+      this.color = starColors[Math.floor(Math.random() * starColors.length)];
+      this.twinkle = Math.random() * Math.PI;
+      this.twinkleSpeed = Math.random() * 0.03 + 0.01;
+    }
+
+    update(speed) {
+      this.z -= speed;
+      this.twinkle += this.twinkleSpeed;
+      if (this.z <= 0) {
+        this.reset();
+        this.z = width;
+      }
+    }
+
+    draw(cx, cy) {
+      const k = 250 / this.z;
+      const px = this.x * k + cx;
+      const py = this.y * k + cy;
+
+      if (px < 0 || px >= width || py < 0 || py >= height) return;
+
+      const alpha = Math.min(1, (1 - this.z / width) * (Math.sin(this.twinkle) * 0.35 + 0.65));
+      const rad = Math.max(0.6, (1 - this.z / width) * this.size * 2);
+
+      ctx.beginPath();
+      ctx.arc(px, py, rad, 0, Math.PI * 2);
+      ctx.fillStyle = this.color;
+      ctx.globalAlpha = alpha;
+      ctx.shadowBlur = rad > 1.8 ? 8 : 0;
+      ctx.shadowColor = this.color;
+      ctx.fill();
+      ctx.shadowBlur = 0;
+    }
+  }
+
+  // Populate Starfield
+  for (let i = 0; i < STAR_COUNT; i++) {
+    stars.push(new Star());
+  }
+
+  // Shooting Star / Meteor System
+  let meteor = null;
+  function spawnMeteor() {
+    if (isMobile) return; // Save GPU on mobile
+    meteor = {
+      x: Math.random() * width * 0.8,
+      y: Math.random() * height * 0.4,
+      length: Math.random() * 120 + 80,
+      speed: Math.random() * 10 + 14,
+      angle: Math.PI / 4 + (Math.random() - 0.5) * 0.2,
+      opacity: 1
+    };
+  }
+
+  setInterval(() => {
+    if (!meteor && Math.random() > 0.4) {
+      spawnMeteor();
+    }
+  }, 4000);
+
+  // Parallax on mouse movement
+  let mouseX = 0;
+  let mouseY = 0;
+  let targetMouseX = 0;
+  let targetMouseY = 0;
+
+  window.addEventListener("mousemove", (e) => {
+    targetMouseX = (e.clientX - width / 2) * 0.05;
+    targetMouseY = (e.clientY - height / 2) * 0.05;
+  });
+
+  // Window resize throttle
+  let resizeTimeout;
+  window.addEventListener("resize", () => {
+    clearTimeout(resizeTimeout);
+    resizeTimeout = setTimeout(() => {
+      width = canvas.width = window.innerWidth;
+      height = canvas.height = window.innerHeight;
+    }, 200);
+  });
+
+  // Animation Loop with visibility pause
+  let isRunning = true;
+  document.addEventListener("visibilitychange", () => {
+    isRunning = !document.hidden;
+    if (isRunning) requestAnimationFrame(renderLoop);
+  });
+
+  window.starfieldSpeed = 0.8; // Default cruising speed
+
+  function renderLoop() {
+    if (!isRunning) return;
+
+    ctx.clearRect(0, 0, width, height);
+
+    // Smooth mouse parallax lerp
+    mouseX += (targetMouseX - mouseX) * 0.05;
+    mouseY += (targetMouseY - mouseY) * 0.05;
+
+    const cx = width / 2 + mouseX;
+    const cy = height / 2 + mouseY;
+
+    // Draw Stars
+    const curSpeed = window.starfieldSpeed || 0.8;
+    for (let i = 0; i < stars.length; i++) {
+      stars[i].update(curSpeed);
+      stars[i].draw(cx, cy);
+    }
+
+    // Draw Meteor if active
+    if (meteor) {
+      const endX = meteor.x + Math.cos(meteor.angle) * meteor.length;
+      const endY = meteor.y + Math.sin(meteor.angle) * meteor.length;
+
+      const grad = ctx.createLinearGradient(meteor.x, meteor.y, endX, endY);
+      grad.addColorStop(0, "rgba(255,255,255,0)");
+      grad.addColorStop(0.8, `rgba(56, 189, 248, ${meteor.opacity})`);
+      grad.addColorStop(1, `rgba(255, 255, 255, ${meteor.opacity})`);
+
+      ctx.beginPath();
+      ctx.moveTo(meteor.x, meteor.y);
+      ctx.lineTo(endX, endY);
+      ctx.strokeStyle = grad;
+      ctx.lineWidth = 2;
+      ctx.stroke();
+
+      meteor.x += Math.cos(meteor.angle) * meteor.speed;
+      meteor.y += Math.sin(meteor.angle) * meteor.speed;
+      meteor.opacity -= 0.025;
+
+      if (meteor.opacity <= 0) {
+        meteor = null;
+      }
+    }
+
+    requestAnimationFrame(renderLoop);
+  }
+
+  renderLoop();
+}
+
+/* ==========================================================================
+   WEB AUDIO API SOUND SYNTHESIZER (ZERO ASSETS NEEDED)
+   ========================================================================== */
+let audioCtx = null;
+let soundEnabled = true;
+
+function initSpaceAudio() {
+  const toggleBtn = document.getElementById("audio-toggle");
+  if (!toggleBtn) return;
+
+  // Retrieve setting
+  const saved = localStorage.getItem("space_sfx");
+  if (saved !== null) {
+    soundEnabled = saved === "true";
+  }
+
+  updateAudioBtnUI(toggleBtn);
+
+  toggleBtn.addEventListener("click", () => {
+    soundEnabled = !soundEnabled;
+    localStorage.setItem("space_sfx", soundEnabled);
+    updateAudioBtnUI(toggleBtn);
+    if (soundEnabled) playSynthSound("blip");
+  });
+}
+
+function updateAudioBtnUI(btn) {
+  if (soundEnabled) {
+    btn.innerHTML = '<i class="fas fa-volume-up"></i> <span>SFX: ON</span>';
+    btn.style.borderColor = "var(--neon-cyan)";
+    btn.style.color = "var(--neon-cyan)";
+  } else {
+    btn.innerHTML = '<i class="fas fa-volume-mute"></i> <span>SFX: OFF</span>';
+    btn.style.borderColor = "var(--border-hud)";
+    btn.style.color = "var(--text-muted-space)";
+  }
+}
+
+function playSynthSound(type) {
+  if (!soundEnabled) return;
+
+  try {
+    if (!audioCtx) {
+      const AudioContext = window.AudioContext || window.webkitAudioContext;
+      audioCtx = new AudioContext();
+    }
+    if (audioCtx.state === "suspended") {
+      audioCtx.resume();
+    }
+
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+
+    const now = audioCtx.currentTime;
+
+    if (type === "blip") {
+      // High-tech UI chirp
+      osc.type = "sine";
+      osc.frequency.setValueAtTime(800, now);
+      osc.frequency.exponentialRampToValueAtTime(1400, now + 0.06);
+      gain.gain.setValueAtTime(0.08, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
+      osc.start(now);
+      osc.stop(now + 0.08);
+    } else if (type === "scan") {
+      // Planetary scan telemetry burst
+      osc.type = "triangle";
+      osc.frequency.setValueAtTime(450, now);
+      osc.frequency.exponentialRampToValueAtTime(950, now + 0.15);
+      gain.gain.setValueAtTime(0.12, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.25);
+      osc.start(now);
+      osc.stop(now + 0.25);
+    } else if (type === "warp") {
+      // Hyperspace warp drive resonance
+      osc.type = "sawtooth";
+      osc.frequency.setValueAtTime(120, now);
+      osc.frequency.exponentialRampToValueAtTime(850, now + 0.9);
+      gain.gain.setValueAtTime(0.15, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 1.1);
+      osc.start(now);
+      osc.stop(now + 1.1);
+    }
+  } catch (e) {
+    // Audio unsupported or restricted
+  }
+}
+
+/* ==========================================================================
+   DYNAMIC RENDER ENGINES
+   ========================================================================== */
+
+// 1. Hero Section
 function renderHero() {
   const p = portfolioData.personalInfo;
   document.getElementById("hero-name").textContent = p.name;
   document.getElementById("hero-bio").textContent = p.bio;
   
-  // Download Resume link
+  const statusEl = document.getElementById("hero-status");
+  if (statusEl) statusEl.textContent = `${p.coordinates} // ${p.statusBadge}`;
+
+  // Download resume link
   const resumeBtn = document.getElementById("hero-resume-btn");
   if (resumeBtn) {
     resumeBtn.setAttribute("href", p.resumeUrl);
     resumeBtn.setAttribute("download", p.name.replace(/\s+/g, '_') + "_Resume.pdf");
   }
 
-  // Social Links mapping
+  // Hero Avatar
+  const avatar = document.getElementById("hero-avatar");
+  if (avatar && p.profileImg) {
+    avatar.src = p.profileImg;
+  }
+
+  // Hero Social Buttons
   const heroSocials = document.getElementById("hero-socials");
   if (heroSocials) {
     heroSocials.innerHTML = `
-      <a href="${p.socialLinks.linkedin}" target="_blank" class="hero-social-btn" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
-      <a href="${p.socialLinks.github}" target="_blank" class="hero-social-btn" aria-label="GitHub"><i class="fab fa-github"></i></a>
-      <a href="${p.socialLinks.leetcode}" target="_blank" class="hero-social-btn" aria-label="LeetCode"><i class="fa-solid fa-code"></i></a>
-      <a href="${p.socialLinks.instagram}" target="_blank" class="hero-social-btn" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
-      <a href="${p.socialLinks.email}" class="hero-social-btn" aria-label="Email"><i class="far fa-envelope"></i></a>
+      <a href="${p.socialLinks.linkedin}" target="_blank" class="footer-social-btn" aria-label="LinkedIn" title="LinkedIn Profile"><i class="fab fa-linkedin-in"></i></a>
+      <a href="${p.socialLinks.github}" target="_blank" class="footer-social-btn" aria-label="GitHub" title="GitHub Profile"><i class="fab fa-github"></i></a>
+      <a href="${p.socialLinks.leetcode}" target="_blank" class="footer-social-btn" aria-label="LeetCode" title="LeetCode (150+ Solved)"><i class="fa-solid fa-code"></i></a>
+      <a href="${p.socialLinks.instagram}" target="_blank" class="footer-social-btn" aria-label="Instagram" title="Instagram Profile"><i class="fab fa-instagram"></i></a>
+      <a href="${p.socialLinks.email}" class="footer-social-btn" aria-label="Email" title="Send Direct Transmission"><i class="far fa-envelope"></i></a>
     `;
   }
 }
 
-// About Me Section Render
-function renderAboutMe() {
-  const a = portfolioData.aboutMe;
-  const p = portfolioData.personalInfo;
+// 2. MISSION CONTROL (About Me)
+function renderMissionControl() {
+  const mc = portfolioData.missionControl;
   
-  // Career Objective
-  document.getElementById("about-objective").textContent = a.objective;
+  // Objective
+  const objEl = document.getElementById("about-objective");
+  if (objEl) objEl.textContent = mc.objective;
+
+  // Strengths
+  const strengthsEl = document.getElementById("about-strengths");
+  if (strengthsEl) {
+    strengthsEl.innerHTML = mc.strengths.map(s => `
+      <li><i class="fas fa-check-circle me-2"></i> ${s}</li>
+    `).join("");
+  }
 
   // Education Timeline
-  const eduContainer = document.getElementById("about-education");
-  if (eduContainer) {
-    eduContainer.innerHTML = a.education.map(edu => `
-      <div class="education-card mb-4 border-start border-primary border-3 ps-3">
-        <h5 class="fw-bold mb-1">${edu.degree}</h5>
-        <h6 class="text-accent mb-1 text-primary-custom" style="color: var(--accent-color);">${edu.institution}</h6>
-        <div class="d-flex justify-content-between align-items-center">
-          <small class="text-muted"><i class="far fa-calendar-alt me-1"></i> ${edu.duration}</small>
-          <span class="badge bg-secondary-custom" style="border: 1px solid var(--glass-border); color: var(--text-primary);">${edu.score}</span>
+  const eduEl = document.getElementById("about-education");
+  if (eduEl) {
+    eduEl.innerHTML = mc.education.map(edu => `
+      <div class="education-block mb-3 p-3 rounded" style="background: rgba(4,9,21,0.7); border-left: 3px solid var(--neon-cyan);">
+        <div class="d-flex justify-content-between align-items-center mb-1">
+          <span class="panel-code" style="font-size:0.6rem;">${edu.code}</span>
+          <span class="badge" style="background: rgba(56,189,248,0.15); color: var(--neon-cyan); border: 1px solid var(--border-hud);">${edu.score}</span>
+        </div>
+        <h5 class="fw-bold mb-1" style="font-family: var(--font-hud); font-size: 0.95rem; color: #fff;">${edu.degree}</h5>
+        <div class="text-dim mb-2" style="font-family: var(--font-tech); font-size: 0.85rem;"><i class="fas fa-university me-1 text-info"></i> ${edu.institution}</div>
+        <div class="d-flex justify-content-between text-muted-space" style="font-size: 0.78rem;">
+          <span><i class="far fa-clock me-1"></i> ${edu.duration}</span>
         </div>
       </div>
     `).join("");
   }
 
-  // Strengths
-  const strengthsContainer = document.getElementById("about-strengths");
-  if (strengthsContainer) {
-    strengthsContainer.innerHTML = a.strengths.map(str => `
-      <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i>${str}</li>
-    `).join("");
-  }
-
   // Languages
-  const langContainer = document.getElementById("about-languages");
-  if (langContainer) {
-    langContainer.innerHTML = a.languages.map(lang => `
-      <div class="mb-2 d-flex justify-content-between align-items-center bg-primary-dark p-2 rounded" style="background: var(--card-hover-bg); border: 1px solid var(--glass-border);">
-        <span class="fw-semibold">${lang.name}</span>
-        <span class="badge" style="background: var(--accent-glow); color: var(--accent-color);">${lang.level}</span>
+  const langEl = document.getElementById("about-languages");
+  if (langEl) {
+    langEl.innerHTML = mc.languages.map(l => `
+      <div class="d-flex justify-content-between align-items-center p-2 mb-2 rounded" style="background: rgba(4,9,21,0.7); border: 1px solid rgba(255,255,255,0.05);">
+        <span class="fw-semibold text-white" style="font-family: var(--font-tech); font-size: 0.9rem;">
+          <i class="fas fa-signal me-2 text-cyan"></i>${l.name}
+        </span>
+        <span class="badge" style="background: rgba(168,85,247,0.15); color: #c084fc; border: 1px solid rgba(168,85,247,0.3); font-size: 0.72rem;">${l.level}</span>
       </div>
     `).join("");
   }
 }
 
-// Skills Render (categorized tabs)
-function renderSkills() {
-  const s = portfolioData.skills;
-  
-  const mapSkills = (skillList) => {
-    return skillList.map(skill => `
+// 3. TECHNOLOGY (Skills)
+function renderTechnology() {
+  const t = portfolioData.technology;
+
+  const buildSkillBars = (list) => {
+    return list.map(item => `
       <div class="skill-item">
         <div class="skill-info">
-          <span>${skill.name}</span>
-          <span>${skill.level}%</span>
+          <span class="skill-name">
+            <i class="${item.icon}" style="color: ${item.color || 'var(--neon-cyan)'}; font-size: 1rem;"></i>
+            ${item.name}
+          </span>
+          <span class="skill-pct">${item.level}%</span>
         </div>
         <div class="skill-bar">
-          <div class="skill-progress" data-level="${skill.level}"></div>
+          <div class="skill-progress" data-level="${item.level}"></div>
         </div>
       </div>
     `).join("");
   };
 
-  document.getElementById("skills-frontend").innerHTML = mapSkills(s.frontend);
-  document.getElementById("skills-backend").innerHTML = mapSkills(s.backend);
-  document.getElementById("skills-database").innerHTML = mapSkills(s.database);
-  document.getElementById("skills-programming").innerHTML = mapSkills(s.programming);
-  document.getElementById("skills-tools").innerHTML = mapSkills(s.tools);
+  document.getElementById("skills-frontend").innerHTML = buildSkillBars(t.frontend);
+  document.getElementById("skills-backend").innerHTML = buildSkillBars(t.backend);
+  document.getElementById("skills-database").innerHTML = buildSkillBars(t.database);
+  document.getElementById("skills-programming").innerHTML = buildSkillBars(t.programming);
+  document.getElementById("skills-tools").innerHTML = buildSkillBars(t.tools);
 }
 
-// Projects Render with Category Filtering
-function renderProjects(filterCategory) {
-  const projectsGrid = document.getElementById("projects-grid");
-  if (!projectsGrid) return;
+// 4. PROJECT GALAXY (Planetary Render Engine)
+function renderProjectGalaxy(category) {
+  const grid = document.getElementById("projects-grid");
+  if (!grid) return;
 
   const filtered = portfolioData.projects.filter(p => {
-    if (filterCategory === "all") return true;
-    return p.category === filterCategory;
+    if (category === "all") return true;
+    return p.category === category;
   });
 
   if (filtered.length === 0) {
-    projectsGrid.innerHTML = `
-      <div class="col-12 text-center py-5">
-        <p class="text-muted">No projects found in this category.</p>
-      </div>
-    `;
+    grid.innerHTML = `<div class="col-12 text-center py-5"><p class="text-dim">No celestial worlds found in this sector.</p></div>`;
     return;
   }
 
-  projectsGrid.innerHTML = filtered.map(p => `
-    <div class="col-lg-6 col-md-6 mb-4 reveal-item">
-      <div class="glass-card project-card">
-        <div class="project-img-wrapper">
-          <img src="${p.image}" alt="${p.title}" loading="lazy">
-        </div>
-        <div class="project-details">
-          <div class="project-tags">
-            ${p.technologies.map(tech => `<span class="project-tag">${tech}</span>`).join("")}
-          </div>
-          <h4 class="project-title">${p.title}</h4>
-          <p class="project-desc">${p.description}</p>
-          <div class="project-actions">
-            <a href="${p.liveDemo}" target="_blank" class="project-link"><i class="fas fa-external-link-alt"></i> Live</a>
-            <a href="${p.github}" target="_blank" class="project-link"><i class="fab fa-github"></i> Code</a>
-            <a href="#" class="project-link explore-btn" data-project-id="${p.id}"><i class="fas fa-info-circle"></i> Details</a>
+  grid.innerHTML = filtered.map(p => `
+    <div class="col-lg-6 col-md-6 mb-4 planet-card-wrapper reveal-item">
+      <div class="planet-card" style="--card-theme: ${p.themeColor}; --card-glow: ${p.glowColor};">
+        
+        <!-- Planet Call Sign -->
+        <div class="planet-callsign"><i class="fas fa-satellite me-1"></i> ${p.planetName}</div>
+        <h3 class="planet-name-title">${p.planetTitle}</h3>
+        <div class="planet-type-badge">${p.planetType}</div>
+
+        <!-- Interactive 3D Planet Sphere -->
+        <div class="planet-stage" data-project-id="${p.id}" title="Click to Scan Planet">
+          <div class="celestial-sphere" style="background: ${p.planetGradient}; --planet-glow: ${p.glowColor};">
+            ${p.hasRing ? `<div class="celestial-ring" style="border-color: ${p.themeColor};"></div>` : ""}
+            <div class="orbiting-moon"></div>
           </div>
         </div>
+
+        <!-- Description -->
+        <p class="planet-desc">${p.description}</p>
+
+        <!-- Tech tags -->
+        <div class="planet-tech-tags">
+          ${p.technologies.map(t => `<span class="planet-tech-tag">${t}</span>`).join("")}
+        </div>
+
+        <!-- Planetary Actions -->
+        <div class="planet-actions">
+          <button class="btn-planet-action btn-scan explore-btn" data-project-id="${p.id}">
+            <i class="fas fa-radar"></i> SCAN PLANET
+          </button>
+          <a href="${p.liveDemo}" target="_blank" class="btn-planet-action btn-outline-planet">
+            <i class="fas fa-external-link-alt"></i> LIVE
+          </a>
+          <a href="${p.github}" target="_blank" class="btn-planet-action btn-outline-planet">
+            <i class="fab fa-github"></i> REPO
+          </a>
+        </div>
+
       </div>
     </div>
   `).join("");
 
-  // Re-run scroll reveal listener for the newly generated project cards
+  // Bind planet stage clicks
+  const planetStages = document.querySelectorAll(".planet-stage");
+  planetStages.forEach(stage => {
+    stage.addEventListener("click", () => {
+      const pid = stage.getAttribute("data-project-id");
+      const proj = portfolioData.projects.find(x => x.id === pid);
+      if (proj) {
+        playSynthSound("scan");
+        showProjectModal(proj);
+      }
+    });
+  });
+
+  // Re-observe reveal items
   setTimeout(setupScrollReveal, 100);
 }
 
-// Setup Projects Category filter events
-function setupProjectFilters() {
-  const filterBtns = document.querySelectorAll(".filter-btn");
-  filterBtns.forEach(btn => {
-    btn.addEventListener("click", (e) => {
-      filterBtns.forEach(b => b.classList.remove("active"));
-      e.target.classList.add("active");
-      const category = e.target.getAttribute("data-filter");
-      renderProjects(category);
-    });
-  });
-}
-
-// Experience Section Render
-function renderExperience() {
+// 5. CAREER JOURNEY (Mission Log Timeline)
+function renderCareerJourney() {
   const timeline = document.getElementById("experience-timeline");
   if (!timeline) return;
 
-  const experienceSection = document.getElementById("experience");
-
-  if (!portfolioData.experience || portfolioData.experience.length === 0) {
-    if (experienceSection) {
-      experienceSection.style.display = "none";
-    }
-    // Remove experience link from navigation bar
-    const navLink = document.querySelector('a.nav-link-custom[href="#experience"]');
-    if (navLink) {
-      const parentLi = navLink.parentElement;
-      if (parentLi) parentLi.style.display = "none";
-    }
-    return;
-  }
-
-  timeline.innerHTML = portfolioData.experience.map((exp, index) => {
-    // Alternate timeline sides
-    const sideClass = index % 2 === 0 ? "left-timeline" : "right-timeline";
+  timeline.innerHTML = portfolioData.careerJourney.map((mission, index) => {
+    const sideClass = index % 2 === 0 ? "left-mission" : "right-mission";
     return `
-      <div class="timeline-item ${sideClass} reveal-item">
-        <div class="timeline-item-content">
-          <div class="timeline-date"><i class="far fa-clock me-1"></i> ${exp.duration}</div>
-          <h4 class="timeline-role">${exp.role}</h4>
-          <h5 class="timeline-company">${exp.company}</h5>
-          <ul class="timeline-desc">
-            ${exp.responsibilities.map(resp => `<li>${resp}</li>`).join("")}
+      <div class="timeline-mission-item ${sideClass} reveal-item">
+        <div class="mission-panel">
+          <div class="d-flex justify-content-between align-items-center mb-1">
+            <span class="mission-code-badge">${mission.flightCode}</span>
+            <span class="badge" style="background: rgba(16,185,129,0.15); color: #34d399; border: 1px solid rgba(16,185,129,0.4); font-size: 0.68rem;">${mission.badge}</span>
+          </div>
+          <h4 class="mission-role-title">${mission.role}</h4>
+          <div class="mission-org-text"><i class="fas fa-space-shuttle me-2"></i>${mission.organization}</div>
+          <div class="text-dim mb-3" style="font-size: 0.8rem; font-family: var(--font-tech);"><i class="far fa-calendar-alt me-1"></i> ${mission.duration}</div>
+          <ul class="mission-duties">
+            ${mission.responsibilities.map(r => `<li>${r}</li>`).join("")}
           </ul>
         </div>
       </div>
@@ -244,94 +530,86 @@ function renderExperience() {
   }).join("");
 }
 
-// Certifications Section Render
-function renderCertifications() {
-  const container = document.getElementById("certifications-container");
-  if (!container) return;
-
-  container.innerHTML = portfolioData.certifications.map(c => `
-    <div class="col-lg-4 col-md-6 mb-4 reveal-item">
-      <div class="glass-card cert-card">
-        <div>
-          <div class="cert-header">
-            <div class="cert-icon"><i class="fas fa-award"></i></div>
-            <span class="cert-date">${c.date}</span>
+// 6. ACHIEVEMENTS & CERTIFICATES
+function renderAchievementsAndCerts() {
+  // Counters
+  const achContainer = document.getElementById("achievements-container");
+  if (achContainer) {
+    achContainer.innerHTML = portfolioData.achievements.map(a => `
+      <div class="col-lg-3 col-6 reveal-item">
+        <a href="${a.link || '#'}" ${a.link ? 'target="_blank"' : ''} class="text-decoration-none">
+          <div class="stat-telemetry-box">
+            <div class="stat-icon"><i class="${a.icon}"></i></div>
+            <div class="stat-number" data-target="${a.count}">${a.count}${a.suffix}</div>
+            <div class="stat-label">${a.title}</div>
+            <div class="stat-sub">${a.subtitle}</div>
           </div>
-          <h4 class="cert-title">${c.title}</h4>
-          <p class="cert-org">${c.organization}</p>
-        </div>
-        <a href="${c.link}" target="_blank" class="btn btn-secondary-custom btn-sm align-self-start"><i class="fas fa-certificate me-1"></i> View Certificate</a>
+        </a>
       </div>
-    </div>
-  `).join("");
-}
+    `).join("");
+  }
 
-// Achievements Render
-function renderAchievements() {
-  const container = document.getElementById("achievements-container");
-  if (!container) return;
-
-  container.innerHTML = portfolioData.achievements.map(a => {
-    const cardContent = `
-      <div class="stat-icon"><i class="${a.icon}"></i></div>
-      <div class="stat-number" data-target="${a.count}">${a.count}</div>
-      <div class="stat-title">${a.title}</div>
-    `;
-
-    if (a.link) {
-      return `
-        <div class="col-md-3 col-6 mb-4 reveal-item">
-          <a href="${a.link}" target="_blank" class="text-decoration-none" style="color: inherit;" aria-label="${a.title}">
-            <div class="glass-card stat-card">
-              ${cardContent}
+  // Certifications
+  const certContainer = document.getElementById("certifications-container");
+  if (certContainer) {
+    certContainer.innerHTML = portfolioData.certifications.map(c => `
+      <div class="col-lg-6 reveal-item">
+        <div class="glass-panel cert-card h-100 d-flex flex-column justify-content-between">
+          <div>
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <span class="cert-code">${c.code}</span>
+              <span class="badge" style="background: rgba(56,189,248,0.12); color: var(--neon-cyan); border: 1px solid var(--border-hud);">${c.date}</span>
             </div>
+            <div class="d-flex align-items-center gap-2 mb-2">
+              <i class="${c.icon} text-cyan" style="font-size: 1.3rem;"></i>
+              <h4 class="cert-title mb-0">${c.title}</h4>
+            </div>
+            <p class="cert-org"><i class="fas fa-building me-1 text-purple"></i> ${c.organization}</p>
+          </div>
+          <a href="${c.link}" target="_blank" class="btn-space btn-space-primary btn-sm align-self-start mt-3">
+            <span class="btn-corner tl"></span><span class="btn-corner br"></span>
+            <i class="fas fa-file-pdf me-2"></i> VERIFY CREDENTIAL
           </a>
         </div>
-      `;
-    }
-
-    return `
-      <div class="col-md-3 col-6 mb-4 reveal-item">
-        <div class="glass-card stat-card">
-          ${cardContent}
-        </div>
       </div>
-    `;
-  }).join("");
+    `).join("");
+  }
 }
 
-// Services Render
+// 7. SERVICES
 function renderServices() {
   const container = document.getElementById("services-container");
   if (!container) return;
 
   container.innerHTML = portfolioData.services.map(s => `
-    <div class="col-lg-3 col-md-6 mb-4 reveal-item">
-      <div class="glass-card service-card">
-        <div class="service-icon-wrapper">
-          <i class="${s.icon}"></i>
+    <div class="col-lg-3 col-md-6 reveal-item">
+      <div class="glass-panel h-100">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <div class="contact-icon-box m-0"><i class="${s.icon}"></i></div>
+          <span class="panel-code" style="font-size: 0.62rem;">${s.badge}</span>
         </div>
-        <h4 class="service-title">${s.title}</h4>
-        <p class="service-desc">${s.description}</p>
+        <h4 class="panel-title mb-2" style="font-size: 1.05rem;">${s.title}</h4>
+        <p class="panel-text" style="font-size: 0.88rem;">${s.description}</p>
       </div>
     </div>
   `).join("");
 }
 
-// Testimonials Render
+// 8. TESTIMONIALS
 function renderTestimonials() {
   const container = document.getElementById("testimonials-container");
   if (!container) return;
 
   container.innerHTML = portfolioData.testimonials.map(t => `
-    <div class="col-lg-6 col-md-6 mb-4 reveal-item">
-      <div class="glass-card testimonial-card">
-        <p class="testimonial-quote">${t.comment}</p>
-        <div class="testimonial-author">
-          <img src="${t.avatar}" class="testimonial-avatar" alt="${t.name}">
+    <div class="col-lg-6 reveal-item">
+      <div class="glass-panel h-100">
+        <div class="mb-3 text-cyan" style="font-size: 1.8rem;"><i class="fas fa-quote-left"></i></div>
+        <p class="panel-text mb-4" style="font-style: italic;">${t.comment}</p>
+        <div class="d-flex align-items-center gap-3">
+          <img src="${t.avatar}" alt="${t.name}" class="rounded-circle border border-cyan" style="width: 48px; height: 48px; object-fit: cover;">
           <div>
-            <div class="author-name">${t.name}</div>
-            <div class="author-role">${t.role}</div>
+            <div class="fw-bold text-white" style="font-family: var(--font-hud); font-size: 0.95rem;">${t.name}</div>
+            <div class="text-dim" style="font-size: 0.78rem;">${t.role}</div>
           </div>
         </div>
       </div>
@@ -339,418 +617,128 @@ function renderTestimonials() {
   `).join("");
 }
 
-// Contact Details Render
-function renderContactInfo() {
+// 9. CONTACT BASE
+function renderContactBase() {
   const c = portfolioData.contact;
   const p = portfolioData.personalInfo;
-  
-  // Set text values
+
   document.getElementById("contact-email").textContent = c.email;
-  document.getElementById("contact-email").setAttribute("href", `mailto:${c.email}`);
+  document.getElementById("contact-email").href = `mailto:${c.email}`;
   document.getElementById("contact-phone").textContent = c.phone;
-  document.getElementById("contact-phone").setAttribute("href", `tel:${c.phone.replace(/\s+/g, '')}`);
+  document.getElementById("contact-phone").href = `tel:${c.phone.replace(/\s+/g, '')}`;
   document.getElementById("contact-location").textContent = c.location;
 
-  // Set Google maps iframe src
   const mapIframe = document.getElementById("contact-map");
   if (mapIframe) {
-    mapIframe.setAttribute("src", c.googleMapEmbedUrl);
+    mapIframe.src = c.googleMapEmbedUrl;
   }
 
-  // Footer Social links
+  // Footer Socials
   const footerSocials = document.getElementById("footer-socials");
   if (footerSocials) {
     footerSocials.innerHTML = `
-      <a href="${p.socialLinks.linkedin}" target="_blank" class="footer-social-btn" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
-      <a href="${p.socialLinks.github}" target="_blank" class="footer-social-btn" aria-label="GitHub"><i class="fab fa-github"></i></a>
-      <a href="${p.socialLinks.leetcode}" target="_blank" class="footer-social-btn" aria-label="LeetCode"><i class="fa-solid fa-code"></i></a>
-      <a href="${p.socialLinks.instagram}" target="_blank" class="footer-social-btn" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
-      <a href="${p.socialLinks.email}" class="footer-social-btn" aria-label="Email"><i class="far fa-envelope"></i></a>
+      <a href="${p.socialLinks.linkedin}" target="_blank" class="footer-social-btn" aria-label="LinkedIn" title="LinkedIn Profile"><i class="fab fa-linkedin-in"></i></a>
+      <a href="${p.socialLinks.github}" target="_blank" class="footer-social-btn" aria-label="GitHub" title="GitHub Profile"><i class="fab fa-github"></i></a>
+      <a href="${p.socialLinks.leetcode}" target="_blank" class="footer-social-btn" aria-label="LeetCode" title="LeetCode (150+ Solved)"><i class="fa-solid fa-code"></i></a>
+      <a href="${p.socialLinks.instagram}" target="_blank" class="footer-social-btn" aria-label="Instagram" title="Instagram Profile"><i class="fab fa-instagram"></i></a>
+      <a href="${p.socialLinks.email}" class="footer-social-btn" aria-label="Email" title="Send Email"><i class="far fa-envelope"></i></a>
     `;
   }
 }
 
-/* ==========================================
-   ANIMATIONS & SCRIPTS INTERACTION INTERFACES
-   ========================================== */
+/* ==========================================================================
+   INTERACTIONS & HUD CONTROLLER
+   ========================================================================== */
 
-// Theme Toggle Code
-function setupThemeToggle() {
-  const toggleBtn = document.getElementById("theme-toggle");
-  if (!toggleBtn) return;
-
-  const currentTheme = localStorage.getItem("theme");
-  
-  // Apply stored preference
-  if (currentTheme === "light") {
-    document.body.classList.add("light-theme");
-    toggleBtn.innerHTML = '<i class="fas fa-moon"></i>';
-  } else {
-    toggleBtn.innerHTML = '<i class="fas fa-sun"></i>';
-  }
-
-  toggleBtn.addEventListener("click", () => {
-    document.body.classList.toggle("light-theme");
-    const isLight = document.body.classList.contains("light-theme");
-    
-    // Update local storage and button icon
-    if (isLight) {
-      localStorage.setItem("theme", "light");
-      toggleBtn.innerHTML = '<i class="fas fa-moon"></i>';
-    } else {
-      localStorage.setItem("theme", "dark");
-      toggleBtn.innerHTML = '<i class="fas fa-sun"></i>';
-    }
-  });
-}
-
-// Scroll progress bar
-function setupScrollProgress() {
-  const progressBar = document.getElementById("scroll-progress");
-  if (!progressBar) return;
-
-  window.addEventListener("scroll", () => {
-    const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-    const scrollPercentage = (window.scrollY / scrollHeight) * 100;
-    progressBar.style.width = scrollPercentage + "%";
-  });
-}
-
-// Header changes color when scrolled
-function setupStickyNavbar() {
+// 1. Navigation Sticky & Section Tracking
+function setupNavbarAndScroll() {
   const navbar = document.querySelector(".navbar-custom");
-  if (!navbar) return;
-
-  window.addEventListener("scroll", () => {
-    if (window.scrollY > 50) {
-      navbar.classList.add("navbar-scrolled");
-    } else {
-      navbar.classList.remove("navbar-scrolled");
-    }
-  });
-
-  // Track active section highlight in header menu
+  const scrollProg = document.getElementById("scroll-progress");
   const sections = document.querySelectorAll("section");
   const navLinks = document.querySelectorAll(".nav-link-custom");
 
   window.addEventListener("scroll", () => {
-    let currentId = "";
-    sections.forEach(section => {
-      const sectionTop = section.offsetTop;
-      const sectionHeight = section.clientHeight;
-      if (window.scrollY >= (sectionTop - 250)) {
-        currentId = section.getAttribute("id");
+    // Scroll progress bar
+    const scrollH = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+    if (scrollH > 0 && scrollProg) {
+      scrollProg.style.width = (window.scrollY / scrollH) * 100 + "%";
+    }
+
+    // Navbar style
+    if (window.scrollY > 40) {
+      navbar.classList.add("navbar-scrolled");
+    } else {
+      navbar.classList.remove("navbar-scrolled");
+    }
+
+    // Active Section Tracking
+    let curId = "";
+    sections.forEach(sec => {
+      if (window.scrollY >= sec.offsetTop - 260) {
+        curId = sec.getAttribute("id");
       }
     });
 
     navLinks.forEach(link => {
       link.classList.remove("active");
-      if (link.getAttribute("href") === `#${currentId}`) {
+      if (link.getAttribute("href") === `#${curId}`) {
         link.classList.add("active");
       }
     });
   });
 }
 
-// Custom Cursor (Desktop Only)
-function setupCustomCursor() {
-  const dot = document.querySelector(".custom-cursor-dot");
-  const outline = document.querySelector(".custom-cursor-outline");
-
-  if (!dot || !outline) return;
-
-  // Detect Touch / Mobile
-  const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
-  if (isTouchDevice) {
-    dot.style.display = "none";
-    outline.style.display = "none";
-    return;
-  }
-
-  // Display cursors
-  dot.style.display = "block";
-  outline.style.display = "block";
-
-  let outlineX = 0;
-  let outlineY = 0;
-  let targetX = 0;
-  let targetY = 0;
-
-  // Update target positions on mousemove
-  window.addEventListener("mousemove", (e) => {
-    targetX = e.clientX;
-    targetY = e.clientY;
-    dot.style.left = targetX + "px";
-    dot.style.top = targetY + "px";
-  });
-
-  // Slow smooth following for outer outline ring
-  function animateOutline() {
-    // Lerp formulation
-    outlineX += (targetX - outlineX) * 0.15;
-    outlineY += (targetY - outlineY) * 0.15;
-
-    outline.style.left = outlineX + "px";
-    outline.style.top = outlineY + "px";
-
-    requestAnimationFrame(animateOutline);
-  }
-  animateOutline();
-
-  // Highlight cursor on links & interactive elements
-  const hoverables = document.querySelectorAll("a, button, .filter-btn, .glass-card, input, textarea, .theme-toggle-btn");
-  hoverables.forEach(elem => {
-    elem.addEventListener("mouseenter", () => {
-      document.body.classList.add("cursor-hover");
-    });
-    elem.addEventListener("mouseleave", () => {
-      document.body.classList.remove("cursor-hover");
+// 2. Project Galaxy Controls
+function setupGalaxyControls() {
+  // Category Filters
+  const filterBtns = document.querySelectorAll(".project-filter-container .filter-btn");
+  filterBtns.forEach(btn => {
+    btn.addEventListener("click", () => {
+      playSynthSound("blip");
+      filterBtns.forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+      const cat = btn.getAttribute("data-filter");
+      renderProjectGalaxy(cat);
     });
   });
-}
 
-// Custom typewriter cycle script
-function setupTypewriter() {
-  const target = document.getElementById("typing-text");
-  if (!target) return;
+  // View Mode: Orbit vs Matrix
+  const orbitBtn = document.getElementById("view-mode-orbit");
+  const gridBtn = document.getElementById("view-mode-grid");
+  const gridContainer = document.getElementById("projects-grid");
 
-  const roles = portfolioData.personalInfo.roles;
-  let roleIndex = 0;
-  let charIndex = 0;
-  let isDeleting = false;
-  let typingSpeed = 100;
-
-  function type() {
-    const currentRole = roles[roleIndex];
-    
-    if (isDeleting) {
-      // Deleting characters
-      target.textContent = currentRole.substring(0, charIndex - 1);
-      charIndex--;
-      typingSpeed = 50; // faster deleting
-    } else {
-      // Typing characters
-      target.textContent = currentRole.substring(0, charIndex + 1);
-      charIndex++;
-      typingSpeed = 150; // normal speed
-    }
-
-    if (!isDeleting && charIndex === currentRole.length) {
-      // Pause at full word
-      typingSpeed = 2000;
-      isDeleting = true;
-    } else if (isDeleting && charIndex === 0) {
-      isDeleting = false;
-      roleIndex = (roleIndex + 1) % roles.length;
-      typingSpeed = 500; // Pause before typing next word
-    }
-
-    setTimeout(type, typingSpeed);
-  }
-
-  // Start typing loop
-  setTimeout(type, 1000);
-}
-
-// Scroll reveal animations using Intersection Observer
-function setupScrollReveal() {
-  const revealElements = document.querySelectorAll(".reveal-item, .reveal-left, .reveal-right");
-  
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add("active");
-        
-        // If skill progress bar enters view, animate skill bars
-        if (entry.target.classList.contains("skills-container") || entry.target.id === "skills") {
-          animateSkills();
-        }
-      }
-    });
-  }, {
-    threshold: 0.15,
-    rootMargin: "0px 0px -50px 0px"
-  });
-
-  revealElements.forEach(elem => {
-    observer.observe(elem);
-  });
-}
-
-// Animate Skills Progress bars
-function animateSkills() {
-  const progressBars = document.querySelectorAll(".skill-progress");
-  progressBars.forEach(bar => {
-    const targetLevel = bar.getAttribute("data-level");
-    bar.style.width = targetLevel + "%";
-  });
-}
-
-// Animate Statistics Counter
-function setupStatsCounter() {
-  const statsSection = document.getElementById("achievements");
-  if (!statsSection) return;
-
-  let counted = false;
-
-  const observer = new IntersectionObserver((entries) => {
-    const entry = entries[0];
-    if (entry.isIntersecting && !counted) {
-      counted = true;
-      const numElements = document.querySelectorAll(".stat-number");
-      
-      numElements.forEach(el => {
-        const target = parseInt(el.getAttribute("data-target"), 10);
-        let current = 0;
-        const duration = 2000; // 2 seconds
-        const stepTime = Math.max(Math.floor(duration / target), 15);
-        
-        const counterInterval = setInterval(() => {
-          current += Math.ceil(target / (duration / stepTime));
-          if (current >= target) {
-            el.textContent = target;
-            clearInterval(counterInterval);
-          } else {
-            el.textContent = current;
-          }
-        }, stepTime);
-      });
-    }
-  }, {
-    threshold: 0.3
-  });
-
-  observer.observe(statsSection);
-}
-
-// Form Submission & Validation
-function setupContactForm() {
-  const form = document.getElementById("portfolio-contact-form");
-  const modal = document.getElementById("form-success-modal");
-  
-  if (!form) return;
-
-  form.addEventListener("submit", (e) => {
-    e.preventDefault();
-
-    // Reset validation states
-    form.classList.remove("was-validated");
-
-    const name = document.getElementById("form-name");
-    const email = document.getElementById("form-email");
-    const subject = document.getElementById("form-subject");
-    const message = document.getElementById("form-message");
-
-    let isValid = true;
-
-    // Simple validation triggers
-    [name, email, subject, message].forEach(input => {
-      if (!input.value.trim()) {
-        input.classList.add("is-invalid");
-        isValid = false;
-      } else {
-        input.classList.remove("is-invalid");
-        input.classList.add("is-valid");
-      }
+  if (orbitBtn && gridBtn) {
+    orbitBtn.addEventListener("click", () => {
+      playSynthSound("blip");
+      orbitBtn.classList.add("active");
+      gridBtn.classList.remove("active");
+      gridContainer.classList.remove("matrix-mode");
     });
 
-    // Email regex validation
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (email.value.trim() && !emailRegex.test(email.value.trim())) {
-      email.classList.add("is-invalid");
-      isValid = false;
-    }
-
-    if (!isValid) {
-      form.classList.add("was-validated");
-      return;
-    }
-
-    // Success State - Show Modal feedback
-    showModalFeedback();
-    
-    // Reset Form Fields
-    form.reset();
-    document.querySelectorAll(".form-control-custom").forEach(el => {
-      el.classList.remove("is-valid", "is-invalid");
-    });
-  });
-}
-
-// Show Glassmorphism Modal Feedback
-function showModalFeedback() {
-  // Create dialog elements dynamically or trigger preset modal
-  let modal = document.getElementById("success-modal");
-  if (!modal) {
-    modal = document.createElement("div");
-    modal.id = "success-modal";
-    modal.innerHTML = `
-      <div style="position: fixed; top: 0; left: 0; width:100%; height:100%; background: rgba(7, 14, 27, 0.85); backdrop-filter: blur(8px); display: flex; align-items: center; justify-content: center; z-index: 2000; opacity: 0; transition: opacity 0.3s ease;">
-        <div class="glass-card text-center" style="max-width: 450px; padding: 40px; border-radius: 20px; border: 1px solid var(--accent-color);">
-          <div style="width:70px; height:70px; background: var(--accent-glow); color: var(--accent-color); border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:2rem; margin:0 auto 20px auto;">
-            <i class="fas fa-paper-plane"></i>
-          </div>
-          <h3 class="fw-bold mb-2">Message Sent!</h3>
-          <p class="text-secondary mb-4">Thank you for reaching out, Sai Dhanush. Your message has been received successfully. I will get back to you shortly!</p>
-          <button id="close-modal-btn" class="btn btn-custom btn-primary-custom" style="padding:10px 30px;">Great!</button>
-        </div>
-      </div>
-    `;
-    document.body.appendChild(modal);
-
-    const closeBtn = document.getElementById("close-modal-btn");
-    closeBtn.addEventListener("click", () => {
-      const overlay = modal.firstElementChild;
-      overlay.style.opacity = "0";
-      setTimeout(() => {
-        modal.style.display = "none";
-      }, 300);
+    gridBtn.addEventListener("click", () => {
+      playSynthSound("blip");
+      gridBtn.classList.add("active");
+      orbitBtn.classList.remove("active");
+      gridContainer.classList.add("matrix-mode");
     });
   }
 
-  modal.style.display = "block";
-  // Trigger transition
-  setTimeout(() => {
-    modal.firstElementChild.style.opacity = "1";
-  }, 50);
-}
-
-// Back to top button triggers
-function setupBackToTop() {
-  const backToTopBtn = document.getElementById("back-to-top");
-  if (!backToTopBtn) return;
-
-  window.addEventListener("scroll", () => {
-    if (window.scrollY > 400) {
-      backToTopBtn.classList.add("show");
-    } else {
-      backToTopBtn.classList.remove("show");
-    }
-  });
-
-  backToTopBtn.addEventListener("click", () => {
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth"
-    });
-  });
-}
-
-// Setup Project Details Modal
-function setupProjectModal() {
+  // Delegate project modal buttons
   document.addEventListener("click", (e) => {
     const btn = e.target.closest(".explore-btn");
     if (!btn) return;
 
     e.preventDefault();
-    const projectId = btn.getAttribute("data-project-id");
-    const project = portfolioData.projects.find(p => p.id === projectId);
-    if (!project) return;
-
-    showProjectModal(project);
+    const pid = btn.getAttribute("data-project-id");
+    const project = portfolioData.projects.find(p => p.id === pid);
+    if (project) {
+      playSynthSound("scan");
+      showProjectModal(project);
+    }
   });
 }
 
+// 3. Holographic Project Modal
 function showProjectModal(project) {
   let modal = document.getElementById("project-details-modal");
   if (!modal) {
@@ -759,58 +747,70 @@ function showProjectModal(project) {
     document.body.appendChild(modal);
   }
 
-  // Generate detailed features list
-  const featuresList = (project.features || [])
-    .map(f => `<li class="mb-2" style="font-size: 0.9rem;"><i class="fas fa-check text-success me-2"></i> ${f}</li>`)
-    .join("");
-
   modal.innerHTML = `
-    <div style="position: fixed; top: 0; left: 0; width:100%; height:100%; background: rgba(7, 14, 27, 0.85); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); display: flex; align-items: center; justify-content: center; z-index: 2000; opacity: 0; transition: opacity 0.3s ease;">
-      <div class="glass-card text-start" style="max-width: 600px; width: 90%; max-height: 90vh; overflow-y: auto; padding: 35px; border-radius: 20px; border: 1px solid var(--accent-color); position: relative;">
+    <div style="position: fixed; inset: 0; background: rgba(2, 4, 10, 0.9); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); display: flex; align-items: center; justify-content: center; z-index: 99999; opacity: 0; transition: opacity 0.3s ease;">
+      <div class="glass-panel text-start" style="max-width: 650px; width: 92%; max-height: 90vh; overflow-y: auto; padding: 35px; border-radius: 16px; border: 1px solid ${project.themeColor}; box-shadow: 0 0 50px ${project.glowColor}; position: relative;">
+        
         <!-- Close Button -->
-        <button id="close-project-modal" aria-label="Close details" style="position: absolute; top: 20px; right: 20px; background: none; border: none; color: var(--text-primary); font-size: 1.5rem; cursor: pointer;">
+        <button id="close-project-modal" aria-label="Close Mission Briefing" style="position: absolute; top: 20px; right: 20px; background: none; border: 1px solid var(--border-hud); color: var(--neon-cyan); border-radius: 50%; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; cursor: pointer;">
           <i class="fas fa-times"></i>
         </button>
-        
-        <!-- Image header -->
-        <div style="width: 100%; height: 200px; border-radius: 12px; overflow: hidden; border: 1px solid var(--glass-border); margin-bottom: 25px;">
-          <img src="${project.image}" alt="${project.title}" style="width: 100%; height: 100%; object-fit: cover;">
+
+        <!-- Modal Top Header -->
+        <div class="d-flex align-items-center gap-3 mb-3">
+          <div style="width: 50px; height: 50px; border-radius: 50%; background: ${project.planetGradient}; box-shadow: 0 0 20px ${project.glowColor}; flex-shrink: 0;"></div>
+          <div>
+            <div class="panel-code" style="font-size:0.65rem;">${project.planetName} // ORBIT BRIEFING</div>
+            <h3 class="fw-bold mb-0" style="font-family: var(--font-hud); font-size: 1.4rem; color: #fff;">${project.planetTitle}</h3>
+          </div>
         </div>
 
-        <h3 class="fw-bold mb-2" style="font-family: var(--font-heading); color: var(--text-primary);">${project.title}</h3>
-        <div class="project-tags mb-3 d-flex flex-wrap gap-2">
-          ${project.technologies.map(t => `<span class="project-tag" style="background: var(--card-hover-bg); border: 1px solid var(--glass-border); padding: 4px 10px; border-radius: 12px; font-size: 0.75rem; color: var(--accent-color); font-weight: 500;">${t}</span>`).join("")}
+        <!-- Project Image -->
+        <div style="width: 100%; height: 210px; border-radius: 10px; overflow: hidden; border: 1px solid var(--border-hud); margin-bottom: 20px;">
+          <img src="${project.image}" alt="${project.planetTitle}" style="width: 100%; height: 100%; object-fit: cover;">
         </div>
 
-        <h5 class="fw-semibold mb-2" style="color: var(--accent-color);">Description</h5>
-        <p class="text-secondary-custom mb-4" style="font-size: 0.95rem; line-height: 1.6;">${project.description}</p>
-        
-        ${project.features && project.features.length > 0 ? `
-          <h5 class="fw-semibold mb-2" style="color: var(--accent-color);">Key Features</h5>
-          <ul class="list-unstyled text-secondary-custom mb-4">
-            ${featuresList}
-          </ul>
-        ` : ""}
-
-        <div class="project-actions mt-4 pt-3 border-top border-secondary border-opacity-25 d-flex gap-3">
-          <a href="${project.liveDemo}" target="_blank" class="btn btn-custom btn-primary-custom" style="padding: 10px 20px;"><i class="fas fa-external-link-alt"></i> Live Demo</a>
-          <a href="${project.github}" target="_blank" class="btn btn-custom btn-secondary-custom" style="padding: 10px 20px;"><i class="fab fa-github"></i> GitHub</a>
+        <!-- Tech chips -->
+        <div class="d-flex flex-wrap gap-2 mb-3">
+          ${project.technologies.map(t => `<span class="planet-tech-tag" style="border-color:${project.themeColor}; color:${project.themeColor};">${t}</span>`).join("")}
         </div>
+
+        <!-- Description -->
+        <div class="panel-sub-header mb-1"><i class="fas fa-terminal text-cyan me-1"></i> MISSION SUMMARY</div>
+        <p class="panel-text mb-4" style="line-height: 1.7;">${project.description}</p>
+
+        <!-- Key Features Checklist -->
+        <div class="panel-sub-header mb-2"><i class="fas fa-check-double text-success me-1"></i> KEY MISSION CAPABILITIES</div>
+        <ul class="panel-checklist mb-4">
+          ${project.features.map(f => `<li><i class="fas fa-chevron-right text-cyan"></i> ${f}</li>`).join("")}
+        </ul>
+
+        <!-- Action Links -->
+        <div class="d-flex flex-wrap gap-3 pt-3 border-top border-secondary border-opacity-25">
+          <a href="${project.liveDemo}" target="_blank" class="btn-space btn-space-primary">
+            <span class="btn-corner tl"></span><span class="btn-corner br"></span>
+            <i class="fas fa-satellite-dish me-2"></i> TRANSMIT LIVE
+          </a>
+          <a href="${project.github}" target="_blank" class="btn-space btn-space-secondary">
+            <span class="btn-corner tl"></span><span class="btn-corner br"></span>
+            <i class="fab fa-github me-2"></i> GITHUB REPO
+          </a>
+        </div>
+
       </div>
     </div>
   `;
 
   modal.style.display = "block";
-  // Fade in
   setTimeout(() => {
     modal.firstElementChild.style.opacity = "1";
-  }, 50);
+  }, 40);
 
-  // Close binding
   const closeBtn = document.getElementById("close-project-modal");
   const overlay = modal.firstElementChild;
-  
+
   const closeModal = () => {
+    playSynthSound("blip");
     overlay.style.opacity = "0";
     setTimeout(() => {
       modal.style.display = "none";
@@ -821,15 +821,273 @@ function showProjectModal(project) {
   overlay.addEventListener("click", (e) => {
     if (e.target === overlay) closeModal();
   });
-  
-  // Custom cursor hover states inside modal
-  const hoverables = modal.querySelectorAll("a, button");
+
+  // ESC key
+  const escHandler = (e) => {
+    if (e.key === "Escape") {
+      closeModal();
+      window.removeEventListener("keydown", escHandler);
+    }
+  };
+  window.addEventListener("keydown", escHandler);
+}
+
+// 4. Warp Speed Button Handler
+function setupWarpSpeed() {
+  const warpBtn = document.getElementById("warp-btn");
+  const tunnel = document.getElementById("warp-tunnel");
+  if (!warpBtn || !tunnel) return;
+
+  warpBtn.addEventListener("click", () => {
+    playSynthSound("warp");
+
+    // Accelerate Starfield
+    window.starfieldSpeed = 25;
+    tunnel.classList.add("warp-active");
+
+    setTimeout(() => {
+      window.starfieldSpeed = 0.8;
+      tunnel.classList.remove("warp-active");
+
+      // Smooth jump to projects
+      const projSec = document.getElementById("projects");
+      if (projSec) {
+        projSec.scrollIntoView({ behavior: "smooth" });
+      }
+    }, 1100);
+  });
+}
+
+// 5. Cyber Terminal Typewriter
+function setupTypewriter() {
+  const target = document.getElementById("typing-text");
+  if (!target) return;
+
+  const roles = portfolioData.personalInfo.roles;
+  let rIdx = 0;
+  let cIdx = 0;
+  let isDeleting = false;
+  let speed = 90;
+
+  function typeStep() {
+    const cur = roles[rIdx];
+
+    if (isDeleting) {
+      target.textContent = cur.substring(0, cIdx - 1);
+      cIdx--;
+      speed = 40;
+    } else {
+      target.textContent = cur.substring(0, cIdx + 1);
+      cIdx++;
+      speed = 100;
+    }
+
+    if (!isDeleting && cIdx === cur.length) {
+      speed = 2200;
+      isDeleting = true;
+    } else if (isDeleting && cIdx === 0) {
+      isDeleting = false;
+      rIdx = (rIdx + 1) % roles.length;
+      speed = 400;
+    }
+
+    setTimeout(typeStep, speed);
+  }
+
+  setTimeout(typeStep, 800);
+}
+
+// 6. Scroll Reveal Observer
+function setupScrollReveal() {
+  const items = document.querySelectorAll(".reveal-item, .reveal-left, .reveal-right");
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add("active");
+        if (entry.target.id === "skills" || entry.target.classList.contains("skills-module")) {
+          animateSkillBars();
+        }
+      }
+    });
+  }, {
+    threshold: 0.12,
+    rootMargin: "0px 0px -40px 0px"
+  });
+
+  items.forEach(el => observer.observe(el));
+}
+
+function animateSkillBars() {
+  const bars = document.querySelectorAll(".skill-progress");
+  bars.forEach(bar => {
+    const lvl = bar.getAttribute("data-level");
+    bar.style.width = lvl + "%";
+  });
+}
+
+// 7. Stats Counter Animation
+function setupStatsCounters() {
+  const sec = document.getElementById("certifications");
+  if (!sec) return;
+
+  let hasCounted = false;
+  const observer = new IntersectionObserver((entries) => {
+    if (entries[0].isIntersecting && !hasCounted) {
+      hasCounted = true;
+      const numEls = document.querySelectorAll(".stat-number");
+      numEls.forEach(el => {
+        const target = parseInt(el.getAttribute("data-target"), 10);
+        let cur = 0;
+        const duration = 1800;
+        const stepTime = 20;
+        const increment = Math.ceil(target / (duration / stepTime));
+
+        const interval = setInterval(() => {
+          cur += increment;
+          if (cur >= target) {
+            el.textContent = target + "+";
+            clearInterval(interval);
+          } else {
+            el.textContent = cur + "+";
+          }
+        }, stepTime);
+      });
+    }
+  }, { threshold: 0.25 });
+
+  observer.observe(sec);
+}
+
+// 8. Custom Sci-Fi Reticle Cursor (Desktop)
+function setupCustomCursor() {
+  const dot = document.querySelector(".custom-cursor-dot");
+  const outline = document.querySelector(".custom-cursor-outline");
+  if (!dot || !outline) return;
+
+  if (window.innerWidth < 992 || 'ontouchstart' in window) {
+    dot.style.display = "none";
+    outline.style.display = "none";
+    return;
+  }
+
+  dot.style.display = "block";
+  outline.style.display = "block";
+
+  let outX = 0, outY = 0;
+  let targetX = 0, targetY = 0;
+
+  window.addEventListener("mousemove", (e) => {
+    targetX = e.clientX;
+    targetY = e.clientY;
+    dot.style.left = targetX + "px";
+    dot.style.top = targetY + "px";
+  });
+
+  function followLoop() {
+    outX += (targetX - outX) * 0.18;
+    outY += (targetY - outY) * 0.18;
+    outline.style.left = outX + "px";
+    outline.style.top = outY + "px";
+    requestAnimationFrame(followLoop);
+  }
+  followLoop();
+
+  // Hover triggers
+  const hoverables = document.querySelectorAll("a, button, .planet-stage, .glass-panel, input, textarea");
   hoverables.forEach(elem => {
-    elem.addEventListener("mouseenter", () => {
-      document.body.classList.add("cursor-hover");
+    elem.addEventListener("mouseenter", () => document.body.classList.add("cursor-hover"));
+    elem.addEventListener("mouseleave", () => document.body.classList.remove("cursor-hover"));
+  });
+}
+
+// 9. Contact Form Subspace Transmission
+function setupContactForm() {
+  const form = document.getElementById("portfolio-contact-form");
+  if (!form) return;
+
+  form.addEventListener("submit", (e) => {
+    e.preventDefault();
+
+    const name = document.getElementById("form-name");
+    const email = document.getElementById("form-email");
+    const subject = document.getElementById("form-subject");
+    const msg = document.getElementById("form-message");
+
+    let valid = true;
+    [name, email, subject, msg].forEach(input => {
+      if (!input.value.trim()) {
+        input.classList.add("is-invalid");
+        valid = false;
+      } else {
+        input.classList.remove("is-invalid");
+      }
     });
-    elem.addEventListener("mouseleave", () => {
-      document.body.classList.remove("cursor-hover");
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (email.value.trim() && !emailRegex.test(email.value.trim())) {
+      email.classList.add("is-invalid");
+      valid = false;
+    }
+
+    if (!valid) return;
+
+    playSynthSound("scan");
+    showTransmissionFeedback();
+    form.reset();
+  });
+}
+
+function showTransmissionFeedback() {
+  let modal = document.getElementById("subspace-success-modal");
+  if (!modal) {
+    modal = document.createElement("div");
+    modal.id = "subspace-success-modal";
+    modal.innerHTML = `
+      <div style="position: fixed; inset: 0; background: rgba(2, 4, 10, 0.92); backdrop-filter: blur(16px); display: flex; align-items: center; justify-content: center; z-index: 99999; opacity: 0; transition: opacity 0.3s ease;">
+        <div class="glass-panel text-center" style="max-width: 480px; padding: 40px; border-radius: 16px; border: 1px solid var(--neon-cyan); box-shadow: 0 0 40px var(--glow-cyan);">
+          <div style="width: 70px; height: 70px; background: rgba(56, 189, 248, 0.15); border: 1px solid var(--neon-cyan); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2rem; color: var(--neon-cyan); margin: 0 auto 20px auto; box-shadow: 0 0 20px var(--glow-cyan);">
+            <i class="fas fa-satellite-dish"></i>
+          </div>
+          <h3 class="fw-bold mb-2" style="font-family: var(--font-hud); color: #fff;">TRANSMISSION RECEIVED</h3>
+          <p class="panel-text mb-4">Signal acknowledged! Your mission payload has been routed to Commander MJ Sai Dhanush. Expect a subspace reply shortly.</p>
+          <button id="close-tx-btn" class="btn-space btn-space-primary" style="padding: 10px 30px;">
+            <span class="btn-corner tl"></span><span class="btn-corner br"></span>
+            ACKNOWLEDGE
+          </button>
+        </div>
+      </div>
+    `;
+    document.body.appendChild(modal);
+
+    const closeBtn = document.getElementById("close-tx-btn");
+    closeBtn.addEventListener("click", () => {
+      playSynthSound("blip");
+      modal.firstElementChild.style.opacity = "0";
+      setTimeout(() => { modal.style.display = "none"; }, 300);
     });
+  }
+
+  modal.style.display = "block";
+  setTimeout(() => {
+    modal.firstElementChild.style.opacity = "1";
+  }, 40);
+}
+
+// 10. Return to Bridge Button
+function setupBackToBridge() {
+  const btn = document.getElementById("back-to-top");
+  if (!btn) return;
+
+  window.addEventListener("scroll", () => {
+    if (window.scrollY > 350) {
+      btn.classList.add("show");
+    } else {
+      btn.classList.remove("show");
+    }
+  });
+
+  btn.addEventListener("click", () => {
+    playSynthSound("blip");
+    window.scrollTo({ top: 0, behavior: "smooth" });
   });
 }

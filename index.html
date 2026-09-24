@@ -4,20 +4,25 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <!-- SEO Meta Tags -->
-  <title>M J Sai Dhanush | Portfolio - Full Stack Developer</title>
-  <meta name="description" content="Personal portfolio of M J Sai Dhanush, a professional Full Stack Developer specializing in React.js, Node.js, Express, MongoDB, Java, and Python. View certifications, projects, and work experience.">
-  <meta name="keywords" content="M J Sai Dhanush, Sai Dhanush, Portfolio, Full Stack Developer, Frontend Developer, Bengaluru, India, React, Node.js, Express, MongoDB, Java, Python, Web Developer">
-  <meta name="author" content="M J Sai Dhanush">
+  <!-- SEO & Space Meta Tags -->
+  <title>MJ SAI DHANUSH | Space-Themed Developer Portfolio</title>
+  <meta name="description" content="Immersive space-themed developer portfolio of MJ Sai Dhanush. Full Stack MERN Developer, Problem Solver, and Software Engineer building digital experiences through code and AI.">
+  <meta name="keywords" content="MJ Sai Dhanush, Sai Dhanush, Space Portfolio, Full Stack Developer, MERN Developer, React, Node.js, MongoDB, LeetCode 150, Bengaluru, India">
+  <meta name="author" content="MJ Sai Dhanush">
 
-  <!-- Open Graph / Social Media Meta Tags -->
-  <meta property="og:title" content="M J Sai Dhanush | Personal Portfolio">
-  <meta property="og:description" content="Personal portfolio of M J Sai Dhanush, a professional Full Stack Developer specializing in React.js, Node.js, Express, MongoDB, Java, and Python.">
+  <!-- Open Graph -->
+  <meta property="og:title" content="MJ SAI DHANUSH | Space Developer Portfolio">
+  <meta property="og:description" content="Building Digital Experiences Through Code & AI. Explore Project Galaxy and Spacecraft Telemetry.">
   <meta property="og:image" content="assets/images/profile.jpg">
   <meta property="og:type" content="website">
 
   <!-- Favicon -->
   <link rel="icon" type="image/jpeg" href="assets/images/profile.jpg">
+
+  <!-- Google Fonts: Orbitron (Sci-Fi HUD), Space Grotesk (Tech Accent), Inter (Readable Body) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Orbitron:wght@400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
 
   <!-- Bootstrap 5 CSS CDN -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -25,60 +30,129 @@
   <!-- FontAwesome 6 Icons CDN -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   
-  <!-- Custom CSS Styles -->
+  <!-- Custom Space Styles -->
   <link rel="stylesheet" href="css/style.css">
 </head>
-<body>
+<body class="space-theme">
 
-  <!-- Scroll Progress Bar -->
-  <div id="scroll-progress" aria-hidden="true"></div>
+  <!-- Dynamic Cosmic Canvas Background (Stars, Nebulas, Meteors, Parallax) -->
+  <canvas id="space-canvas" aria-hidden="true"></canvas>
 
-  <!-- Loading Animation Overlay -->
-  <div id="loader" class="loader-wrapper" role="status" aria-live="polite">
-    <div class="loader-spinner" aria-label="Loading portfolio contents"></div>
+  <!-- Ambient Cosmic Glow Shaders -->
+  <div class="cosmic-nebula nebula-1" aria-hidden="true"></div>
+  <div class="cosmic-nebula nebula-2" aria-hidden="true"></div>
+  <div class="cosmic-nebula nebula-3" aria-hidden="true"></div>
+
+  <!-- Spacecraft Warp Speed Jump Tunnel Overlay -->
+  <div id="warp-tunnel" class="warp-tunnel" aria-hidden="true">
+    <div class="warp-core-pulse"></div>
   </div>
 
-  <!-- Custom Cursor Elements (Desktop only, handled via JS) -->
+  <!-- Telemetry Scroll Progress Bar -->
+  <div id="scroll-progress" aria-hidden="true"></div>
+
+  <!-- Spacecraft System Loader -->
+  <div id="loader" class="loader-wrapper" role="status" aria-live="polite">
+    <div class="spacecraft-loader">
+      <div class="reactor-ring ring-1"></div>
+      <div class="reactor-ring ring-2"></div>
+      <div class="reactor-ring ring-3"></div>
+      <div class="reactor-core">
+        <i class="fas fa-meteor"></i>
+      </div>
+      <div class="loader-text">
+        <span class="hud-glitch">INITIALIZING SPACECRAFT HUD</span>
+        <span class="hud-sub">CALIBRATING STELLAR SENSORS...</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Custom Sci-Fi Reticle Cursor (Desktop) -->
   <div class="custom-cursor-dot" aria-hidden="true"></div>
   <div class="custom-cursor-outline" aria-hidden="true"></div>
 
-  <!-- Floating Social Media Icons (Fixed left side, desktop only) -->
-  <div class="floating-socials-container" aria-label="Social Profiles Sidebar">
-    <a href="https://www.linkedin.com/in/mj-sai-dhanush-b8174228b/" target="_blank" aria-label="LinkedIn Profile"><i class="fab fa-linkedin-in"></i></a>
-    <a href="https://github.com/mjsaidhanush" target="_blank" aria-label="GitHub Profile"><i class="fab fa-github"></i></a>
-    <a href="https://leetcode.com/u/Dhanush_9/" target="_blank" aria-label="LeetCode Profile"><i class="fa-solid fa-code"></i></a>
-    <a href="https://instagram.com/mjsaidhanush" target="_blank" aria-label="Instagram Profile"><i class="fab fa-instagram"></i></a>
-    <a href="mailto:mjsaidhanush@example.com" aria-label="Send Email"><i class="far fa-envelope"></i></a>
+  <!-- Fixed Subspace Communications Array (Floating Left Sidebar) -->
+  <div class="floating-socials-container" aria-label="Subspace Communications Channels">
+    <div class="social-telemetry-header">COMMS</div>
+    <a href="https://www.linkedin.com/in/mj-sai-dhanush-b8174228b/" target="_blank" aria-label="LinkedIn Comm Channel" title="LinkedIn Profile"><i class="fab fa-linkedin-in"></i></a>
+    <a href="https://github.com/mjsaidhanush" target="_blank" aria-label="GitHub Repository Stream" title="GitHub Profile"><i class="fab fa-github"></i></a>
+    <a href="https://leetcode.com/u/Dhanush_9/" target="_blank" aria-label="LeetCode Algorithmic Terminal" title="LeetCode (150+ Solved)"><i class="fa-solid fa-code"></i></a>
+    <a href="https://instagram.com/mjsaidhanush" target="_blank" aria-label="Instagram Stream" title="Instagram Profile"><i class="fab fa-instagram"></i></a>
+    <a href="mailto:mjsaidhanush@gmail.com" aria-label="Direct Subspace Transmission" title="Send Email"><i class="far fa-envelope"></i></a>
+    <div class="social-telemetry-footer">V-2.7</div>
   </div>
 
   <!-- ==========================================
-       NAVIGATION HEADER
+       SPACECRAFT CONTROL INTERFACE NAVIGATION
        ========================================== -->
-  <nav class="navbar navbar-expand-lg navbar-custom fixed-top" aria-label="Primary Navigation">
-    <div class="container">
+  <nav class="navbar navbar-expand-xl navbar-custom fixed-top" aria-label="Spacecraft Flight Deck Navigation">
+    <div class="container-fluid px-lg-5">
+      <!-- Ship Call Sign & Brand -->
       <a class="navbar-brand-custom" href="#home" id="nav-brand">
-        SAI <span>DHANUSH</span>
+        <span class="brand-bracket">[</span>
+        <i class="fas fa-satellite me-2 brand-icon"></i>
+        SAI <span class="brand-highlight">DHANUSH</span>
+        <span class="brand-bracket">]</span>
+        <span class="hud-status-badge d-none d-md-inline-block">
+          <span class="pulse-beacon"></span> SYS: ONLINE
+        </span>
       </a>
-      <button class="navbar-toggler-custom d-lg-none" type="button" data-bs-toggle="collapse" data-bs-target="#portfolioNav" aria-controls="portfolioNav" aria-expanded="false" aria-label="Toggle navigation bar">
-        <i class="fas fa-bars"></i>
+
+      <!-- Mobile Cockpit Toggle -->
+      <button class="navbar-toggler-custom d-xl-none" type="button" data-bs-toggle="collapse" data-bs-target="#portfolioNav" aria-controls="portfolioNav" aria-expanded="false" aria-label="Toggle flight controls">
+        <i class="fas fa-bars-staggered"></i>
       </button>
       
+      <!-- Flight Subsystem Controls -->
       <div class="collapse navbar-collapse justify-content-end" id="portfolioNav">
-        <ul class="navbar-nav align-items-lg-center navbar-collapse-custom">
-          <li class="nav-item"><a class="nav-link-custom active" href="#home">Home</a></li>
-          <li class="nav-item"><a class="nav-link-custom" href="#about">About</a></li>
-          <li class="nav-item"><a class="nav-link-custom" href="#skills">Skills</a></li>
-          <li class="nav-item"><a class="nav-link-custom" href="#projects">Projects</a></li>
-          <li class="nav-item"><a class="nav-link-custom" href="#experience">Experience</a></li>
-          <li class="nav-item"><a class="nav-link-custom" href="#certifications">Certificates</a></li>
-          <li class="nav-item"><a class="nav-link-custom" href="#achievements">Stats</a></li>
-          <li class="nav-item"><a class="nav-link-custom" href="#services">Services</a></li>
-          <li class="nav-item"><a class="nav-link-custom" href="#testimonials">Reviews</a></li>
-          <li class="nav-item"><a class="nav-link-custom" href="#contact">Contact</a></li>
-          <!-- Theme Toggle Switcher -->
-          <li class="nav-item theme-toggle-container">
-            <button class="theme-toggle-btn" id="theme-toggle" aria-label="Toggle Light and Dark Mode">
-              <i class="fas fa-sun"></i>
+        <ul class="navbar-nav align-items-xl-center navbar-collapse-custom">
+          <li class="nav-item">
+            <a class="nav-link-custom active" href="#home">
+              <span class="nav-idx">00 //</span> BRIDGE
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link-custom" href="#about">
+              <span class="nav-idx">01 //</span> MISSION CONTROL
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link-custom" href="#skills">
+              <span class="nav-idx">02 //</span> TECHNOLOGY
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link-custom" href="#projects">
+              <span class="nav-idx">03 //</span> PROJECT GALAXY
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link-custom" href="#experience">
+              <span class="nav-idx">04 //</span> CAREER JOURNEY
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link-custom" href="#certifications">
+              <span class="nav-idx">05 //</span> ACHIEVEMENTS
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link-custom" href="#contact">
+              <span class="nav-idx">06 //</span> CONTACT BASE
+            </a>
+          </li>
+
+          <!-- Spacecraft Utility Modules -->
+          <li class="nav-item hud-utilities d-flex align-items-center gap-2 ms-xl-3 mt-3 mt-xl-0">
+            <!-- Audio Synth Toggle -->
+            <button id="audio-toggle" class="hud-btn hud-audio-btn" aria-label="Toggle Space Audio Effects" title="Toggle Audio Sound FX">
+              <i class="fas fa-volume-up"></i>
+              <span class="audio-label">SFX</span>
+            </button>
+            <!-- Warp Speed Trigger -->
+            <button id="warp-btn" class="hud-btn hud-warp-btn" aria-label="Engage Warp Speed Effect" title="Engage Warp Speed Animation">
+              <i class="fas fa-bolt"></i>
+              <span>WARP</span>
             </button>
           </li>
         </ul>
@@ -87,38 +161,106 @@
   </nav>
 
   <!-- ==========================================
-       1. HERO SECTION
+       HERO SECTION: FUTURISTIC GALAXY
        ========================================== -->
   <section id="home" class="hero-section">
+    <!-- Ambient 3D Space Planet (Hero Background) -->
+    <div class="hero-orbit-decor orbit-decor-1" aria-hidden="true"></div>
+    <div class="hero-orbit-decor orbit-decor-2" aria-hidden="true"></div>
+    <div class="hero-floating-planet planet-cosmic-bg" aria-hidden="true">
+      <div class="planet-atmosphere-halo"></div>
+      <div class="planet-ring-system"></div>
+    </div>
+
     <div class="container">
       <div class="row align-items-center">
+        <!-- Hero Text & Spacecraft Telemetry -->
         <div class="col-lg-7 order-2 order-lg-1 text-lg-start text-center">
-          <span class="hero-subtitle reveal-left">Welcome to my space</span>
+          <!-- Sector Coordinates -->
+          <div class="sector-badge reveal-left mb-3">
+            <span class="pulse-beacon beacon-blue"></span>
+            <span class="badge-text" id="hero-status">SECTOR 07-IND // SYS: ONLINE // LEO-2027</span>
+          </div>
+
+          <!-- Main Title -->
           <h1 class="hero-title reveal-left">
-            Hi, I'm <br><span id="hero-name" style="color: var(--accent-color);">M J Sai Dhanush</span>
+            <span class="title-sub-call">PILOT COMMANDER</span>
+            <span class="title-main-glow" id="hero-name">MJ SAI DHANUSH</span>
           </h1>
-          <h3 class="mb-4 reveal-left fw-semibold" style="font-size: 1.6rem; font-family: var(--font-heading);">
-            I am a <span id="typing-text" style="color: var(--text-primary);">Full Stack Developer</span><span class="typing-cursor">|</span>
-          </h3>
-          <p id="hero-bio" class="hero-description mb-4 reveal-left">
-            Loading introduction...
+
+          <!-- Subtitle Requested: "Building Digital Experiences Through Code & AI" -->
+          <h2 class="hero-subtitle reveal-left">
+            Building Digital Experiences Through <span class="text-gradient-purple">Code & AI</span>
+          </h2>
+
+          <!-- Cyber Terminal Typing Screen -->
+          <div class="terminal-bar reveal-left mb-4">
+            <div class="terminal-dots">
+              <span class="dot-red"></span>
+              <span class="dot-amber"></span>
+              <span class="dot-green"></span>
+            </div>
+            <div class="terminal-content">
+              <span class="terminal-tag">SYSTEM_CORE:~$</span>
+              <span id="typing-text" class="typing-text">Full Stack Developer</span><span class="typing-cursor">_</span>
+            </div>
+          </div>
+
+          <!-- Hero Bio -->
+          <p id="hero-bio" class="hero-description reveal-left mb-4">
+            Loading flight parameters...
           </p>
-          <div class="hero-buttons reveal-left">
-            <a id="hero-resume-btn" href="assets/resume.pdf" download class="btn-custom btn-primary-custom me-sm-3 mb-3 mb-sm-0">
-              <i class="fas fa-download"></i> Download Resume
+
+          <!-- Flight Action Commands -->
+          <div class="hero-buttons reveal-left d-flex flex-wrap gap-3 justify-content-lg-start justify-content-center">
+            <a id="hero-resume-btn" href="assets/resume.pdf" download class="btn-space btn-space-primary">
+              <span class="btn-corner tl"></span><span class="btn-corner br"></span>
+              <i class="fas fa-file-download me-2"></i> DOWNLOAD RESUME
             </a>
-            <a href="#contact" class="btn-custom btn-secondary-custom">
-              <i class="far fa-paper-plane"></i> Contact Me
+            <a href="#projects" class="btn-space btn-space-galaxy">
+              <span class="btn-corner tl"></span><span class="btn-corner br"></span>
+              <i class="fas fa-meteor me-2"></i> EXPLORE GALAXY
+            </a>
+            <a href="#contact" class="btn-space btn-space-secondary">
+              <span class="btn-corner tl"></span><span class="btn-corner br"></span>
+              <i class="fas fa-satellite-dish me-2"></i> TRANSMIT SIGNAL
             </a>
           </div>
-          <!-- Hero Social Icons (Populated dynamically) -->
+
+          <!-- Hero Subspace Channels -->
           <div id="hero-socials" class="d-flex gap-3 justify-content-lg-start justify-content-center mt-4 reveal-left"></div>
         </div>
+
+        <!-- Hero Commander Biometric Holographic Portal -->
         <div class="col-lg-5 order-1 order-lg-2 text-center mb-5 mb-lg-0">
-          <div class="hero-img-container reveal-right">
-            <div class="hero-img-backdrop"></div>
-            <div class="hero-img-wrapper">
-              <img src="assets/images/profile.jpg" alt="M J Sai Dhanush Profile Photo">
+          <div class="commander-portal-container reveal-right">
+            <!-- Rotating Telemetry Rings -->
+            <div class="hud-ring ring-outer"></div>
+            <div class="hud-ring ring-middle"></div>
+            <div class="hud-ring ring-inner"></div>
+
+            <!-- Degree Coordinates Indicators -->
+            <div class="hud-marker marker-0">000°</div>
+            <div class="hud-marker marker-90">090°</div>
+            <div class="hud-marker marker-180">180°</div>
+            <div class="hud-marker marker-270">270°</div>
+
+            <!-- Biometric Hologram Photo Portal -->
+            <div class="portal-frame">
+              <div class="hologram-scanline"></div>
+              <div class="hologram-tint"></div>
+              <img src="assets/images/profile.jpg" alt="Commander MJ Sai Dhanush Portrait" class="commander-photo" id="hero-avatar">
+              <!-- Corner Brackets -->
+              <div class="bracket-tl"></div>
+              <div class="bracket-tr"></div>
+              <div class="bracket-bl"></div>
+              <div class="bracket-br"></div>
+            </div>
+
+            <!-- Identity Telemetry Badge -->
+            <div class="portal-telemetry-badge">
+              <div class="telemetry-id"><i class="fas fa-shield-alt text-info me-1"></i> ID: DHANUSH-BTECH-CSE</div>
+              <div class="telemetry-status">STATUS: COMBAT & CODE READY</div>
             </div>
           </div>
         </div>
@@ -127,38 +269,91 @@
   </section>
 
   <!-- ==========================================
-       2. ABOUT ME SECTION
+       SECTION 01: MISSION CONTROL (About Me)
        ========================================== -->
-  <section id="about" class="bg-secondary-light">
+  <section id="about" class="space-section">
     <div class="container">
-      <div class="text-center">
-        <h2 class="section-title text-center reveal-item">About <span>Me</span></h2>
+      <!-- Section Header -->
+      <div class="section-hud-header text-center reveal-item">
+        <div class="hud-sub-label">SUBSYSTEM 01 // OVERVIEW</div>
+        <h2 class="section-title">MISSION <span>CONTROL</span></h2>
+        <div class="hud-divider"><span></span><i class="fas fa-compass"></i><span></span></div>
       </div>
-      <div class="row mt-5">
-        <div class="col-lg-6 mb-4 reveal-left">
-          <div class="glass-card h-100">
-            <h4 class="fw-bold mb-3" style="font-family: var(--font-heading);"><i class="fas fa-bullseye text-primary me-2"></i>Career Objective</h4>
-            <p id="about-objective" class="text-secondary-custom leading-relaxed">
-              Loading objective...
+
+      <div class="row mt-5 g-4">
+        <!-- Left Command Directive -->
+        <div class="col-lg-6 reveal-left">
+          <div class="glass-panel h-100">
+            <div class="panel-header">
+              <span class="panel-icon"><i class="fas fa-crosshairs"></i></span>
+              <h4 class="panel-title">MISSION DIRECTIVE & SUMMARY</h4>
+              <span class="panel-code">DIR-01</span>
+            </div>
+            
+            <p id="about-objective" class="panel-text mb-4">
+              Loading mission directive...
             </p>
-            
-            <h4 class="fw-bold mt-5 mb-3" style="font-family: var(--font-heading);"><i class="fas fa-heart text-danger me-2"></i>Personal Strengths</h4>
-            <ul id="about-strengths" class="list-unstyled text-secondary-custom">
-              <!-- Dynamically rendered -->
+
+            <div class="panel-sub-header">
+              <i class="fas fa-bolt text-warning me-2"></i> CORE SYSTEM CAPABILITIES
+            </div>
+            <ul id="about-strengths" class="panel-checklist">
+              <!-- Dynamically populated -->
             </ul>
-          </div>
-        </div>
-        <div class="col-lg-6 mb-4 reveal-right">
-          <div class="glass-card mb-4">
-            <h4 class="fw-bold mb-4" style="font-family: var(--font-heading);"><i class="fas fa-graduation-cap text-warning me-2"></i>Education</h4>
-            <div id="about-education">
-              <!-- Dynamically rendered -->
+
+            <!-- Flight Telemetry Quick Stats -->
+            <div class="row mt-4 g-2" id="about-quick-stats">
+              <div class="col-6 col-sm-3">
+                <div class="telemetry-pill">
+                  <div class="pill-label">STATUS</div>
+                  <div class="pill-val text-success">ONLINE</div>
+                </div>
+              </div>
+              <div class="col-6 col-sm-3">
+                <div class="telemetry-pill">
+                  <div class="pill-label">STACK</div>
+                  <div class="pill-val text-cyan">MERN</div>
+                </div>
+              </div>
+              <div class="col-6 col-sm-3">
+                <div class="telemetry-pill">
+                  <div class="pill-label">DSA EXP</div>
+                  <div class="pill-val text-purple">150+</div>
+                </div>
+              </div>
+              <div class="col-6 col-sm-3">
+                <div class="telemetry-pill">
+                  <div class="pill-label">ORBIT</div>
+                  <div class="pill-val text-info">2023-27</div>
+                </div>
+              </div>
             </div>
           </div>
-          <div class="glass-card">
-            <h4 class="fw-bold mb-3" style="font-family: var(--font-heading);"><i class="fas fa-language text-info me-2"></i>Languages Known</h4>
-            <div id="about-languages">
-              <!-- Dynamically rendered -->
+        </div>
+
+        <!-- Right Flight Transcripts & Training -->
+        <div class="col-lg-6 reveal-right">
+          <!-- Education Module -->
+          <div class="glass-panel mb-4">
+            <div class="panel-header">
+              <span class="panel-icon"><i class="fas fa-graduation-cap"></i></span>
+              <h4 class="panel-title">ACADEMIC EXPEDITION & FLIGHT TRAINING</h4>
+              <span class="panel-code">EDU-LOG</span>
+            </div>
+            <div id="about-education" class="mt-3">
+              <!-- Dynamically populated -->
+            </div>
+          </div>
+
+          <!-- Comms Languages Module -->
+          <div class="glass-panel">
+            <div class="panel-header">
+              <span class="panel-icon"><i class="fas fa-broadcast-tower"></i></span>
+              <h4 class="panel-title">SUBSPACE TRANSMISSION LANGUAGES</h4>
+              <span class="panel-code">COMMS-LANG</span>
+            </div>
+            <div id="about-languages" class="mt-3">
+              <!-- Dynamically populated -->
             </div>
           </div>
         </div>
@@ -167,41 +362,69 @@
   </section>
 
   <!-- ==========================================
-       3. SKILLS SECTION
+       SECTION 02: TECHNOLOGY (Skills)
        ========================================== -->
-  <section id="skills" class="skills-container">
+  <section id="skills" class="space-section">
     <div class="container">
-      <div class="text-center">
-        <h2 class="section-title text-center reveal-item">My <span>Skills</span></h2>
+      <!-- Section Header -->
+      <div class="section-hud-header text-center reveal-item">
+        <div class="hud-sub-label">SUBSYSTEM 02 // PROPULSION MATRIX</div>
+        <h2 class="section-title">STELLAR <span>TECHNOLOGY</span></h2>
+        <div class="hud-divider"><span></span><i class="fas fa-microchip"></i><span></span></div>
       </div>
-      <div class="row mt-5">
-        <!-- Frontend Column -->
-        <div class="col-lg-4 col-md-6 mb-4 reveal-left">
-          <div class="glass-card h-100">
-            <h3 class="skills-category-title"><i class="fas fa-laptop-code"></i> Frontend</h3>
-            <div id="skills-frontend"></div>
+
+      <div class="row mt-5 g-4">
+        <!-- Frontend Systems -->
+        <div class="col-lg-4 col-md-6 reveal-left">
+          <div class="glass-panel h-100">
+            <div class="panel-header">
+              <span class="panel-icon icon-react"><i class="fab fa-react"></i></span>
+              <h4 class="panel-title">FRONTEND PROPULSION</h4>
+              <span class="panel-code">UI-CORE</span>
+            </div>
+            <div id="skills-frontend" class="skills-module mt-4"></div>
           </div>
         </div>
-        <!-- Backend & Databases Column -->
-        <div class="col-lg-4 col-md-6 mb-4 reveal-item">
-          <div class="glass-card mb-4">
-            <h3 class="skills-category-title"><i class="fas fa-server"></i> Backend</h3>
-            <div id="skills-backend"></div>
+
+        <!-- Backend & Databases -->
+        <div class="col-lg-4 col-md-6 reveal-item">
+          <div class="glass-panel mb-4">
+            <div class="panel-header">
+              <span class="panel-icon icon-node"><i class="fab fa-node-js"></i></span>
+              <h4 class="panel-title">BACKEND ENGINES</h4>
+              <span class="panel-code">API-SYS</span>
+            </div>
+            <div id="skills-backend" class="skills-module mt-4"></div>
           </div>
-          <div class="glass-card">
-            <h3 class="skills-category-title"><i class="fas fa-database"></i> Database</h3>
-            <div id="skills-database"></div>
+
+          <div class="glass-panel">
+            <div class="panel-header">
+              <span class="panel-icon icon-db"><i class="fas fa-database"></i></span>
+              <h4 class="panel-title">DATABASE STORAGE</h4>
+              <span class="panel-code">DATA-DB</span>
+            </div>
+            <div id="skills-database" class="skills-module mt-4"></div>
           </div>
         </div>
-        <!-- Languages & Tools Column -->
-        <div class="col-lg-4 col-md-6 mb-4 reveal-right">
-          <div class="glass-card mb-4">
-            <h3 class="skills-category-title"><i class="fas fa-code"></i> Programming</h3>
-            <div id="skills-programming"></div>
+
+        <!-- Programming & Developer Tools -->
+        <div class="col-lg-4 col-md-12 reveal-right">
+          <div class="glass-panel mb-4">
+            <div class="panel-header">
+              <span class="panel-icon icon-code"><i class="fas fa-code"></i></span>
+              <h4 class="panel-title">PROGRAMMING PROTOCOLS</h4>
+              <span class="panel-code">LANG-SYS</span>
+            </div>
+            <div id="skills-programming" class="skills-module mt-4"></div>
           </div>
-          <div class="glass-card">
-            <h3 class="skills-category-title"><i class="fas fa-tools"></i> Tools</h3>
-            <div id="skills-tools"></div>
+
+          <div class="glass-panel">
+            <div class="panel-header">
+              <span class="panel-icon icon-tools"><i class="fas fa-tools"></i></span>
+              <h4 class="panel-title">FLIGHT INSTRUMENTS & TOOLS</h4>
+              <span class="panel-code">DEV-OPS</span>
+            </div>
+            <div id="skills-tools" class="skills-module mt-4"></div>
           </div>
         </div>
       </div>
@@ -209,136 +432,181 @@
   </section>
 
   <!-- ==========================================
-       4. PROJECTS SECTION
+       SECTION 03: PROJECT GALAXY (Planets)
        ========================================== -->
-  <section id="projects">
+  <section id="projects" class="space-section">
     <div class="container">
-      <div class="text-center">
-        <h2 class="section-title text-center reveal-item">My <span>Projects</span></h2>
-        <!-- Filters -->
-        <div class="project-filter-container reveal-item">
-          <button class="filter-btn active" data-filter="all" aria-label="View all projects">All</button>
-          <button class="filter-btn" data-filter="frontend" aria-label="View frontend projects">Frontend</button>
-          <button class="filter-btn" data-filter="backend" aria-label="View backend projects">Backend</button>
-          <button class="filter-btn" data-filter="fullstack" aria-label="View full stack projects">Full Stack</button>
+      <!-- Section Header -->
+      <div class="section-hud-header text-center reveal-item">
+        <div class="hud-sub-label">SUBSYSTEM 03 // CELESTIAL WORLDS</div>
+        <h2 class="section-title">PROJECT <span>GALAXY</span></h2>
+        <div class="hud-divider"><span></span><i class="fas fa-globe"></i><span></span></div>
+        <p class="section-subtitle mt-2">
+          Each project is engineered as an interactive celestial planet. Click any planet to scan and access its telemetry briefing!
+        </p>
+
+        <!-- View Controls & Filter Buttons -->
+        <div class="galaxy-controls-wrapper d-flex flex-wrap justify-content-center align-items-center gap-3 mt-4">
+          <!-- Category Filter -->
+          <div class="project-filter-container m-0">
+            <button class="filter-btn active" data-filter="all"><i class="fas fa-border-all me-1"></i> ALL WORLDS</button>
+            <button class="filter-btn" data-filter="fullstack"><i class="fas fa-layer-group me-1"></i> FULL STACK</button>
+            <button class="filter-btn" data-filter="frontend"><i class="fas fa-desktop me-1"></i> FRONTEND</button>
+          </div>
+
+          <!-- View Mode Toggle -->
+          <div class="view-mode-toggle">
+            <button id="view-mode-orbit" class="mode-btn active" title="Orbital Constellation View">
+              <i class="fas fa-circle-notch"></i> ORBIT VIEW
+            </button>
+            <button id="view-mode-grid" class="mode-btn" title="Tactical Grid View">
+              <i class="fas fa-th-large"></i> MATRIX VIEW
+            </button>
+          </div>
         </div>
       </div>
-      <div class="row mt-4" id="projects-grid">
-        <!-- Dynamically Rendered Project Cards -->
+
+      <!-- Projects Planetary Grid Container -->
+      <div class="row mt-5 g-4" id="projects-grid">
+        <!-- Dynamically rendered 3D Project Planets -->
       </div>
     </div>
   </section>
 
   <!-- ==========================================
-       5. EXPERIENCE TIMELINE SECTION
+       SECTION 04: CAREER JOURNEY (Experience Timeline)
        ========================================== -->
-  <section id="experience" class="bg-secondary-light">
+  <section id="experience" class="space-section">
     <div class="container">
-      <div class="text-center">
-        <h2 class="section-title text-center reveal-item">Professional <span>Experience</span></h2>
+      <!-- Section Header -->
+      <div class="section-hud-header text-center reveal-item">
+        <div class="hud-sub-label">SUBSYSTEM 04 // LOGGED MISSIONS</div>
+        <h2 class="section-title">CAREER <span>JOURNEY</span></h2>
+        <div class="hud-divider"><span></span><i class="fas fa-route"></i><span></span></div>
+        <p class="section-subtitle mt-2">
+          Flight trajectory, simulated enterprise missions, and verified full-stack operations.
+        </p>
       </div>
-      <div class="timeline mt-5" id="experience-timeline">
-        <!-- Dynamically Rendered Timeline Items -->
+
+      <!-- Futuristic Cosmic Trajectory Timeline -->
+      <div class="space-timeline mt-5" id="experience-timeline">
+        <!-- Dynamically populated from data.js -->
       </div>
     </div>
   </section>
 
   <!-- ==========================================
-       6. CERTIFICATIONS SECTION
+       SECTION 05: ACHIEVEMENTS & CERTIFICATIONS
        ========================================== -->
-  <section id="certifications">
+  <section id="certifications" class="space-section">
     <div class="container">
-      <div class="text-center">
-        <h2 class="section-title text-center reveal-item">Certifications & <span>Credentials</span></h2>
+      <!-- Section Header -->
+      <div class="section-hud-header text-center reveal-item">
+        <div class="hud-sub-label">SUBSYSTEM 05 // FLIGHT BADGES</div>
+        <h2 class="section-title">STELLAR <span>ACHIEVEMENTS</span></h2>
+        <div class="hud-divider"><span></span><i class="fas fa-medal"></i><span></span></div>
       </div>
-      <div class="row mt-5" id="certifications-container">
-        <!-- Dynamically Rendered Cert Cards -->
+
+      <!-- Animated Telemetry Counters -->
+      <div class="row mt-5 g-4" id="achievements-container">
+        <!-- Dynamically populated -->
+      </div>
+
+      <!-- Verified Flight Credentials (Certifications) -->
+      <div class="row mt-4 g-4" id="certifications-container">
+        <!-- Dynamically populated with Cognify & Forage PDFs -->
       </div>
     </div>
   </section>
 
   <!-- ==========================================
-       7. ACHIEVEMENTS SECTION
+       SECTION 06: ORBITAL SERVICES
        ========================================== -->
-  <section id="achievements" class="bg-secondary-light" aria-label="Key Achievements Stats">
+  <section id="services" class="space-section">
     <div class="container">
-      <div class="text-center">
-        <h2 class="section-title text-center reveal-item">Key <span>Achievements</span></h2>
+      <!-- Section Header -->
+      <div class="section-hud-header text-center reveal-item">
+        <div class="hud-sub-label">SUBSYSTEM 06 // MISSION CAPABILITIES</div>
+        <h2 class="section-title">ORBITAL <span>SERVICES</span></h2>
+        <div class="hud-divider"><span></span><i class="fas fa-cubes"></i><span></span></div>
       </div>
-      <div class="row mt-5" id="achievements-container">
-        <!-- Dynamically Rendered Stat Counters -->
+
+      <div class="row mt-5 g-4" id="services-container">
+        <!-- Dynamically populated -->
       </div>
     </div>
   </section>
 
   <!-- ==========================================
-       8. SERVICES SECTION
+       SECTION 07: TESTIMONIALS (Peer Transmissions)
        ========================================== -->
-  <section id="services">
+  <section id="testimonials" class="space-section">
     <div class="container">
-      <div class="text-center">
-        <h2 class="section-title text-center reveal-item">Services I <span>Offer</span></h2>
+      <!-- Section Header -->
+      <div class="section-hud-header text-center reveal-item">
+        <div class="hud-sub-label">SUBSYSTEM 07 // TRANSMISSIONS RECEIVED</div>
+        <h2 class="section-title">CREW <span>FEEDBACK</span></h2>
+        <div class="hud-divider"><span></span><i class="fas fa-comments"></i><span></span></div>
       </div>
-      <div class="row mt-5" id="services-container">
-        <!-- Dynamically Rendered Services Cards -->
+
+      <div class="row mt-5 g-4" id="testimonials-container">
+        <!-- Dynamically populated -->
       </div>
     </div>
   </section>
 
   <!-- ==========================================
-       9. TESTIMONIALS SECTION
+       SECTION 08: CONTACT BASE (Subspace Comms)
        ========================================== -->
-  <section id="testimonials" class="bg-secondary-light">
+  <section id="contact" class="space-section">
     <div class="container">
-      <div class="text-center">
-        <h2 class="section-title text-center reveal-item">Mentors & Clients <span>Reviews</span></h2>
+      <!-- Section Header -->
+      <div class="section-hud-header text-center reveal-item">
+        <div class="hud-sub-label">SUBSYSTEM 08 // SUBSPACE UPLINK</div>
+        <h2 class="section-title">CONTACT <span>BASE</span></h2>
+        <div class="hud-divider"><span></span><i class="fas fa-tower-broadcast"></i><span></span></div>
+        <p class="section-subtitle mt-2">
+          Establish direct communications or transmit mission opportunities.
+        </p>
       </div>
-      <div class="row mt-5" id="testimonials-container">
-        <!-- Dynamically Rendered Testimonial Cards -->
-      </div>
-    </div>
-  </section>
 
-  <!-- ==========================================
-       10. CONTACT SECTION
-       ========================================== -->
-  <section id="contact">
-    <div class="container">
-      <div class="text-center">
-        <h2 class="section-title text-center reveal-item">Contact <span>Me</span></h2>
-      </div>
-      <div class="row mt-5">
-        <!-- Contact Details & Map Column -->
-        <div class="col-lg-6 mb-5 mb-lg-0 reveal-left">
-          <div class="glass-card h-100">
-            <h4 class="fw-bold mb-4" style="font-family: var(--font-heading);">Get in Touch</h4>
-            
-            <div class="contact-info-item">
+      <div class="row mt-5 g-4">
+        <!-- Left: Subspace Comms Terminal -->
+        <div class="col-lg-6 reveal-left">
+          <div class="glass-panel h-100">
+            <div class="panel-header">
+              <span class="panel-icon"><i class="fas fa-radar"></i></span>
+              <h4 class="panel-title">SUBSPACE TERMINAL</h4>
+              <span class="panel-code">TRANS-01</span>
+            </div>
+
+            <div class="contact-info-item mt-4">
               <div class="contact-icon-box" aria-hidden="true"><i class="far fa-envelope"></i></div>
               <div class="contact-details">
-                <h5>Email Me</h5>
-                <a href="mailto:mjsaidhanush@example.com" id="contact-email">mjsaidhanush@example.com</a>
+                <div class="hud-mini-label">SUBSPACE FREQUENCY // EMAIL</div>
+                <a href="mailto:mjsaidhanush@gmail.com" id="contact-email" class="contact-link">mjsaidhanush@gmail.com</a>
               </div>
             </div>
 
             <div class="contact-info-item">
-              <div class="contact-icon-box" aria-hidden="true"><i class="fas fa-mobile-alt"></i></div>
+              <div class="contact-icon-box" aria-hidden="true"><i class="fas fa-mobile-screen"></i></div>
               <div class="contact-details">
-                <h5>Call Me</h5>
-                <a href="tel:+919876543210" id="contact-phone">+91 98765 43210</a>
+                <div class="hud-mini-label">VOICE COMMS // PHONE</div>
+                <a href="tel:+918217465141" id="contact-phone" class="contact-link">+91 8217465141</a>
               </div>
             </div>
 
             <div class="contact-info-item mb-4">
-              <div class="contact-icon-box" aria-hidden="true"><i class="fas fa-map-marker-alt"></i></div>
+              <div class="contact-icon-box" aria-hidden="true"><i class="fas fa-location-crosshairs"></i></div>
               <div class="contact-details">
-                <h5>My Location</h5>
-                <p id="contact-location">Bengaluru, Karnataka, India</p>
+                <div class="hud-mini-label">BASE COORDINATES // LOCATION</div>
+                <p id="contact-location" class="contact-text mb-0">Bengaluru, Karnataka, India // Global Remote</p>
               </div>
             </div>
 
-            <!-- Google Map Iframe wrapper -->
-            <div class="map-wrapper mt-4">
+            <!-- Satellite Radar Map Wrapper -->
+            <div class="map-radar-wrapper mt-3">
+              <div class="radar-scan-line"></div>
               <iframe 
                 id="contact-map"
                 src="about:blank"
@@ -348,44 +616,60 @@
                 allowfullscreen="" 
                 loading="lazy" 
                 referrerpolicy="no-referrer-when-downgrade"
-                title="Google Maps Location pin of Bengaluru, India">
+                title="Satellite Location Radar coordinates of Bengaluru, India">
               </iframe>
             </div>
           </div>
         </div>
 
-        <!-- Contact Form Column -->
+        <!-- Right: Galactic Transmission Form -->
         <div class="col-lg-6 reveal-right">
-          <div class="glass-card">
-            <h4 class="fw-bold mb-4" style="font-family: var(--font-heading);">Send a Message</h4>
-            
-            <form id="portfolio-contact-form" novalidate>
+          <div class="glass-panel">
+            <div class="panel-header">
+              <span class="panel-icon"><i class="fas fa-satellite-dish"></i></span>
+              <h4 class="panel-title">TRANSMIT TO COMMANDER</h4>
+              <span class="panel-code">MSG-OUT</span>
+            </div>
+
+            <form id="portfolio-contact-form" class="mt-4" novalidate>
               <div class="form-group-custom">
-                <label for="form-name" class="form-label fw-semibold mb-2">Name</label>
-                <input type="text" id="form-name" class="form-control-custom" placeholder="Your Name" required>
-                <div class="invalid-feedback">Please enter your name.</div>
+                <label for="form-name" class="form-hud-label">PILOT / RECRUITER NAME</label>
+                <div class="input-hud-wrapper">
+                  <span class="input-icon"><i class="fas fa-user-astronaut"></i></span>
+                  <input type="text" id="form-name" class="form-control-custom" placeholder="Enter your designation / name" required>
+                </div>
+                <div class="invalid-feedback">Please enter your name/callsign.</div>
               </div>
               
               <div class="form-group-custom">
-                <label for="form-email" class="form-label fw-semibold mb-2">Email Address</label>
-                <input type="email" id="form-email" class="form-control-custom" placeholder="Your Email Address" required>
-                <div class="invalid-feedback">Please enter a valid email address.</div>
+                <label for="form-email" class="form-hud-label">SUBSPACE COMM FREQUENCY (EMAIL)</label>
+                <div class="input-hud-wrapper">
+                  <span class="input-icon"><i class="far fa-envelope"></i></span>
+                  <input type="email" id="form-email" class="form-control-custom" placeholder="your.name@domain.com" required>
+                </div>
+                <div class="invalid-feedback">Please enter a valid communications email.</div>
               </div>
 
               <div class="form-group-custom">
-                <label for="form-subject" class="form-label fw-semibold mb-2">Subject</label>
-                <input type="text" id="form-subject" class="form-control-custom" placeholder="Subject Topic" required>
-                <div class="invalid-feedback">Please specify a subject.</div>
+                <label for="form-subject" class="form-hud-label">MISSION OBJECTIVE (SUBJECT)</label>
+                <div class="input-hud-wrapper">
+                  <span class="input-icon"><i class="fas fa-tag"></i></span>
+                  <input type="text" id="form-subject" class="form-control-custom" placeholder="Full-Stack Opportunity / Project Collaboration" required>
+                </div>
+                <div class="invalid-feedback">Please specify mission objective.</div>
               </div>
 
               <div class="form-group-custom">
-                <label for="form-message" class="form-label fw-semibold mb-2">Message</label>
-                <textarea id="form-message" class="form-control-custom" rows="5" placeholder="Write your message here..." required></textarea>
-                <div class="invalid-feedback">Please write your message.</div>
+                <label for="form-message" class="form-hud-label">TRANSMISSION DATA (MESSAGE)</label>
+                <div class="input-hud-wrapper">
+                  <textarea id="form-message" class="form-control-custom" rows="5" placeholder="Compose message data here..." required></textarea>
+                </div>
+                <div class="invalid-feedback">Please enter your transmission message.</div>
               </div>
 
-              <button type="submit" class="btn-custom btn-primary-custom w-100">
-                <i class="far fa-paper-plane"></i> Send Message
+              <button type="submit" class="btn-space btn-space-primary w-100 mt-3">
+                <span class="btn-corner tl"></span><span class="btn-corner br"></span>
+                <i class="fas fa-paper-plane me-2"></i> TRANSMIT SIGNAL
               </button>
             </form>
           </div>
@@ -395,60 +679,56 @@
   </section>
 
   <!-- ==========================================
-       11. FOOTER SECTION
+       SPACECRAFT FLIGHT DECK FOOTER
        ========================================== -->
-  <footer class="footer-custom" aria-label="Footer Area">
+  <footer class="footer-custom" aria-label="Flight Deck Footer Area">
     <div class="container">
-      <div class="row">
+      <div class="row g-4 align-items-center">
         <!-- Logo and Intro -->
-        <div class="col-lg-4 mb-4 mb-lg-0">
-          <a class="footer-logo" href="#home">SAI <span>DHANUSH</span></a>
-          <p class="pe-lg-5 text-secondary">
-            Thank you for visiting my professional portfolio. Feel free to connect via social platforms or email. Let's build something amazing together!
+        <div class="col-lg-5 mb-3 mb-lg-0 text-lg-start text-center">
+          <a class="footer-logo" href="#home">
+            <span class="brand-bracket">[</span> SAI <span class="brand-highlight">DHANUSH</span> <span class="brand-bracket">]</span>
+          </a>
+          <p class="footer-desc mt-2 mb-0">
+            Navigating the software cosmos through clean MERN architectures, Data Structures, and intelligent systems.
           </p>
-        </div>
-        <!-- Quick Links -->
-        <div class="col-lg-4 col-md-6 mb-4 mb-lg-0">
-          <h5 class="text-white fw-bold mb-3" style="font-family: var(--font-heading);">Quick Navigation</h5>
-          <div class="row">
-            <div class="col-6">
-              <ul class="footer-links">
-                <li><a href="#home"><i class="fas fa-chevron-right me-2" style="font-size:0.7rem;"></i>Home</a></li>
-                <li><a href="#about"><i class="fas fa-chevron-right me-2" style="font-size:0.7rem;"></i>About</a></li>
-                <li><a href="#skills"><i class="fas fa-chevron-right me-2" style="font-size:0.7rem;"></i>Skills</a></li>
-                <li><a href="#projects"><i class="fas fa-chevron-right me-2" style="font-size:0.7rem;"></i>Projects</a></li>
-              </ul>
-            </div>
-            <div class="col-6">
-              <ul class="footer-links">
-                <li><a href="#experience"><i class="fas fa-chevron-right me-2" style="font-size:0.7rem;"></i>Experience</a></li>
-                <li><a href="#certifications"><i class="fas fa-chevron-right me-2" style="font-size:0.7rem;"></i>Credentials</a></li>
-                <li><a href="#services"><i class="fas fa-chevron-right me-2" style="font-size:0.7rem;"></i>Services</a></li>
-                <li><a href="#contact"><i class="fas fa-chevron-right me-2" style="font-size:0.7rem;"></i>Contact</a></li>
-              </ul>
-            </div>
+          <div class="footer-telemetry mt-2">
+            <span class="pulse-beacon"></span> FLIGHT MISSION: LEO-2027 // STATUS: READY
           </div>
         </div>
-        <!-- Socials -->
-        <div class="col-lg-4 col-md-6">
-          <h5 class="text-white fw-bold mb-3" style="font-family: var(--font-heading);">Follow Me</h5>
-          <p class="text-secondary mb-3">Connect on my social channels:</p>
-          <div class="footer-socials" id="footer-socials">
-            <!-- Dynamically rendered -->
+
+        <!-- Quick Teleport Links -->
+        <div class="col-lg-4 col-md-6 text-center">
+          <div class="footer-nav-links d-flex flex-wrap justify-content-center gap-3">
+            <a href="#about">MISSION CONTROL</a>
+            <a href="#skills">TECHNOLOGY</a>
+            <a href="#projects">PROJECT GALAXY</a>
+            <a href="#experience">JOURNEY</a>
+            <a href="#contact">CONTACT BASE</a>
+          </div>
+        </div>
+
+        <!-- Subspace Channel Links -->
+        <div class="col-lg-3 col-md-6 text-lg-end text-center">
+          <div class="footer-socials justify-content-lg-end justify-content-center" id="footer-socials">
+            <!-- Dynamically populated -->
           </div>
         </div>
       </div>
 
       <!-- Copyright Area -->
-      <div class="footer-bottom text-center text-secondary">
-        <p class="mb-0">&copy; <span id="footer-year">2026</span> M J Sai Dhanush. All Rights Reserved. Built with passion & glassmorphism.</p>
+      <div class="footer-bottom text-center mt-5 pt-3">
+        <p class="mb-0 copyright-text">
+          &copy; <span id="footer-year">2026</span> MJ SAI DHANUSH. ALL CELESTIAL RIGHTS RESERVED. // SPACECRAFT NEXUS-VII
+        </p>
       </div>
     </div>
   </footer>
 
-  <!-- Floating Back to Top Button -->
-  <button id="back-to-top" class="back-to-top" aria-label="Scroll back to top of page">
-    <i class="fas fa-arrow-up"></i>
+  <!-- Return to Bridge (Back to Top) -->
+  <button id="back-to-top" class="back-to-top" aria-label="Return to flight deck bridge" title="Return to Bridge">
+    <i class="fas fa-chevron-up"></i>
+    <span class="btn-tooltip">BRIDGE</span>
   </button>
 
   <!-- ==========================================
@@ -460,11 +740,10 @@
   <!-- Portfolio Data Model -->
   <script src="js/data.js"></script>
 
-  <!-- Main Website Interactions Controller -->
+  <!-- Main Website Space Interactions & Starfield Controller -->
   <script src="js/main.js"></script>
   
   <script>
-    // Update copyright year dynamically
     document.getElementById("footer-year").textContent = new Date().getFullYear();
   </script>
 </body>
